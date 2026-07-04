@@ -1,0 +1,1375 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>つなぐ？わける？ 特別支援学校シミュレーター</title>
+  <style>
+    :root {
+      --bg: #f5faf9;
+      --panel: #ffffff;
+      --panel-soft: #eef7f6;
+      --line: #d6e7e5;
+      --text: #1f3437;
+      --muted: #5e7478;
+      --main: #1d8a8a;
+      --main-dark: #126b70;
+      --main-soft: #dff3f1;
+      --good: #2f9b63;
+      --good-soft: #e4f6ec;
+      --warn: #c99719;
+      --warn-soft: #fff5d7;
+      --bad: #d35b50;
+      --bad-soft: #fde9e7;
+      --shadow: 0 18px 46px rgba(31, 52, 55, 0.12);
+      --radius: 8px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      min-height: 100%;
+      background: var(--bg);
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(129, 205, 198, 0.18), transparent 34rem),
+        linear-gradient(180deg, #f8fcfb 0%, var(--bg) 100%);
+      line-height: 1.75;
+      letter-spacing: 0;
+    }
+
+    button,
+    input,
+    textarea {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    button:focus-visible,
+    input:focus-visible,
+    textarea:focus-visible {
+      outline: 3px solid rgba(29, 138, 138, 0.35);
+      outline-offset: 3px;
+    }
+
+    .app {
+      min-height: 100vh;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+    }
+
+    .topbar {
+      padding: 18px clamp(16px, 4vw, 40px) 10px;
+    }
+
+    .topbar-inner {
+      max-width: 1020px;
+      margin: 0 auto;
+      display: grid;
+      gap: 10px;
+    }
+
+    .brand {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 14px;
+    }
+
+    .brand-title {
+      margin: 0;
+      font-size: clamp(1.05rem, 2.5vw, 1.35rem);
+      line-height: 1.35;
+      font-weight: 800;
+      color: var(--main-dark);
+    }
+
+    .brand-subtitle {
+      margin: 3px 0 0;
+      color: var(--muted);
+      font-size: 0.88rem;
+      line-height: 1.55;
+    }
+
+    .score-pill {
+      flex: 0 0 auto;
+      min-width: 82px;
+      padding: 7px 12px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.82);
+      color: var(--main-dark);
+      font-weight: 800;
+      text-align: center;
+      font-size: 0.92rem;
+    }
+
+    .progress-area {
+      display: none;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .progress-area.is-visible {
+      display: grid;
+    }
+
+    .progress-label {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 0.86rem;
+    }
+
+    .progress-track {
+      height: 10px;
+      border-radius: 999px;
+      background: #ddeceb;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      width: 0%;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #5dbbb4, var(--main));
+      transition: width 420ms ease;
+    }
+
+    main {
+      display: grid;
+      place-items: center;
+      padding: 18px clamp(16px, 4vw, 40px) 20px;
+    }
+
+    .screen {
+      width: min(100%, 980px);
+      display: none;
+      animation: fadeSlide 320ms ease both;
+    }
+
+    .screen.is-active {
+      display: block;
+    }
+
+    @keyframes fadeSlide {
+      from {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .panel {
+      background: rgba(255, 255, 255, 0.94);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .panel-body {
+      padding: clamp(22px, 4vw, 40px);
+    }
+
+    .hero {
+      min-height: min(620px, calc(100vh - 170px));
+      display: grid;
+      align-content: center;
+      gap: 22px;
+    }
+
+    .eyebrow {
+      margin: 0 0 8px;
+      color: var(--main-dark);
+      font-weight: 800;
+      font-size: 0.9rem;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: clamp(1.55rem, 5vw, 2.6rem);
+      line-height: 1.25;
+      letter-spacing: 0;
+    }
+
+    h3 {
+      margin: 0;
+      font-size: clamp(1.2rem, 3vw, 1.55rem);
+      line-height: 1.45;
+      letter-spacing: 0;
+    }
+
+    p {
+      margin: 0;
+    }
+
+    .lead {
+      color: var(--muted);
+      font-size: clamp(1rem, 2.4vw, 1.12rem);
+      max-width: 760px;
+    }
+
+    .intro-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 4px;
+    }
+
+    .mini-card {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--panel-soft);
+      padding: 14px;
+    }
+
+    .mini-card strong {
+      display: block;
+      color: var(--main-dark);
+      margin-bottom: 4px;
+    }
+
+    .mini-card span {
+      display: block;
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.6;
+    }
+
+    .screen-grid {
+      display: grid;
+      gap: 18px;
+    }
+
+    .case-box {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fbfefe;
+      padding: clamp(16px, 3vw, 22px);
+    }
+
+    .case-title {
+      margin: 0 0 8px;
+      color: var(--main-dark);
+      font-weight: 800;
+      font-size: 0.95rem;
+    }
+
+    .question {
+      margin-top: 16px;
+      padding-top: 14px;
+      border-top: 1px solid var(--line);
+      font-weight: 800;
+      color: var(--text);
+      font-size: clamp(1.02rem, 2.5vw, 1.18rem);
+    }
+
+    .gauges {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    .gauge {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--panel);
+      padding: 12px;
+    }
+
+    .gauge-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 8px;
+      color: var(--muted);
+      font-size: 0.86rem;
+      font-weight: 700;
+    }
+
+    .gauge-track {
+      height: 9px;
+      border-radius: 999px;
+      background: #e2eeee;
+      overflow: hidden;
+    }
+
+    .gauge-fill {
+      height: 100%;
+      width: 50%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #75c8bd, var(--main));
+      transition: width 520ms ease;
+    }
+
+    .choices {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .choice-card {
+      width: 100%;
+      min-height: 112px;
+      text-align: left;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--panel);
+      color: var(--text);
+      padding: 16px;
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 12px;
+      align-items: start;
+      transition: transform 160ms ease, border-color 160ms ease, box-shadow 160ms ease, background 160ms ease;
+    }
+
+    .choice-card:hover {
+      transform: translateY(-2px) scale(1.01);
+      border-color: #9bcfca;
+      box-shadow: 0 12px 24px rgba(31, 52, 55, 0.1);
+    }
+
+    .choice-card.is-selected {
+      border-color: var(--main);
+      background: var(--main-soft);
+      box-shadow: 0 12px 26px rgba(29, 138, 138, 0.17);
+    }
+
+    .choice-letter {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: #edf6f5;
+      color: var(--main-dark);
+      font-weight: 900;
+      border: 1px solid #c8e3e0;
+    }
+
+    .choice-text {
+      line-height: 1.65;
+      font-weight: 650;
+    }
+
+    .feedback-badge {
+      display: inline-flex;
+      align-items: center;
+      width: fit-content;
+      min-height: 34px;
+      padding: 5px 12px;
+      border-radius: 999px;
+      font-weight: 900;
+      border: 1px solid transparent;
+    }
+
+    .tone-good {
+      color: var(--good);
+      background: var(--good-soft);
+      border-color: #b9e2ca;
+    }
+
+    .tone-warn {
+      color: #89670c;
+      background: var(--warn-soft);
+      border-color: #efd98e;
+    }
+
+    .tone-bad {
+      color: var(--bad);
+      background: var(--bad-soft);
+      border-color: #efc0bc;
+    }
+
+    .feedback-card {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fbfefe;
+      padding: clamp(18px, 3vw, 26px);
+      display: grid;
+      gap: 14px;
+    }
+
+    .selected-line {
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .delta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .delta-chip {
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: var(--panel-soft);
+      color: var(--main-dark);
+      font-size: 0.88rem;
+      font-weight: 800;
+    }
+
+    .delta-chip.minus {
+      background: #f7eeee;
+      color: #9d4f49;
+      border-color: #ebcfcc;
+    }
+
+    .result-layout {
+      display: grid;
+      grid-template-columns: 0.9fr 1.1fr;
+      gap: 14px;
+      align-items: stretch;
+    }
+
+    .score-box,
+    .type-box,
+    .summary-box {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fbfefe;
+      padding: 18px;
+    }
+
+    .score-number {
+      font-size: clamp(2.4rem, 8vw, 4rem);
+      line-height: 1.1;
+      font-weight: 900;
+      color: var(--main-dark);
+    }
+
+    .score-caption {
+      color: var(--muted);
+      font-weight: 800;
+    }
+
+    .type-name {
+      margin-top: 8px;
+      font-size: clamp(1.25rem, 3vw, 1.65rem);
+      font-weight: 900;
+      color: var(--main-dark);
+      line-height: 1.35;
+    }
+
+    .summary-box {
+      display: grid;
+      gap: 10px;
+    }
+
+    .reflection-fields {
+      display: grid;
+      gap: 12px;
+    }
+
+    label {
+      display: grid;
+      gap: 6px;
+      color: var(--main-dark);
+      font-weight: 800;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 78px;
+      resize: vertical;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fbfefe;
+      padding: 12px;
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    .bottom-actions {
+      max-width: 1020px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 0 clamp(16px, 4vw, 40px) clamp(18px, 4vw, 34px);
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .primary-btn,
+    .secondary-btn {
+      min-height: 48px;
+      border-radius: var(--radius);
+      padding: 11px 18px;
+      font-weight: 900;
+      border: 1px solid transparent;
+      transition: transform 160ms ease, box-shadow 160ms ease, background 160ms ease;
+    }
+
+    .primary-btn {
+      background: var(--main);
+      color: #ffffff;
+      box-shadow: 0 12px 24px rgba(29, 138, 138, 0.22);
+    }
+
+    .primary-btn:hover {
+      background: var(--main-dark);
+      transform: translateY(-1px);
+    }
+
+    .primary-btn:disabled {
+      cursor: not-allowed;
+      opacity: 0.45;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .secondary-btn {
+      background: #ffffff;
+      color: var(--main-dark);
+      border-color: var(--line);
+    }
+
+    .secondary-btn:hover {
+      background: var(--panel-soft);
+      transform: translateY(-1px);
+    }
+
+    .visually-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    @media (max-width: 760px) {
+      .brand {
+        display: grid;
+      }
+
+      .score-pill {
+        justify-self: start;
+      }
+
+      .intro-grid,
+      .gauges,
+      .choices,
+      .result-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .choice-card {
+        min-height: 86px;
+      }
+
+      .panel-body {
+        padding: 20px;
+      }
+
+      main {
+        align-items: start;
+      }
+
+      .bottom-actions {
+        justify-content: stretch;
+      }
+
+      .primary-btn,
+      .secondary-btn {
+        width: 100%;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 1ms !important;
+        transition-duration: 1ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="topbar-inner">
+        <div class="brand">
+          <div>
+            <h1 class="brand-title">つなぐ？わける？ 特別支援学校シミュレーター</h1>
+            <p class="brand-subtitle">特別支援学校・センター的機能・インクルーシブ教育を、ケースから考える5分ゲーム</p>
+          </div>
+          <div class="score-pill" aria-live="polite"><span id="scoreNow">0</span> / 8 点</div>
+        </div>
+        <div id="progressArea" class="progress-area" aria-label="進捗">
+          <div class="progress-label">
+            <span id="progressText">ラウンド 1 / 4</span>
+            <span>迷いながら考える時間</span>
+          </div>
+          <div class="progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="4" aria-valuenow="0">
+            <div id="progressFill" class="progress-fill"></div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section id="titleScreen" class="screen is-active" aria-labelledby="titleHeading">
+        <div class="panel hero">
+          <div class="panel-body screen-grid">
+            <div>
+              <p class="eyebrow">大学授業向け学習ゲーム</p>
+              <h2 id="titleHeading">つなぐ？わける？<br>特別支援学校シミュレーター</h2>
+            </div>
+            <p class="lead">4つのケースを読み、いま大切にしたい見方を選びます。正解を当てるより、本人・学校・地域のつながりがどう見え方を変えるかを試してみるゲームです。</p>
+            <div class="intro-grid" aria-label="このゲームで見る3つの状態">
+              <div class="mini-card">
+                <strong>本人の安心</strong>
+                <span>子どもが学びや生活に向かいやすい状態かを見ます。</span>
+              </div>
+              <div class="mini-card">
+                <strong>学校のつながり</strong>
+                <span>担任や校内だけでなく、外部とも考えられているかを見ます。</span>
+              </div>
+              <div class="mini-card">
+                <strong>支援の見通し</strong>
+                <span>次に何をするか、支援が続く形になるかを見ます。</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="howtoScreen" class="screen" aria-labelledby="howtoHeading">
+        <div class="panel hero">
+          <div class="panel-body screen-grid">
+            <div>
+              <p class="eyebrow">遊び方</p>
+              <h2 id="howtoHeading">どれも一理ある選択肢から、いま重視したい見方を選びます。</h2>
+            </div>
+            <div class="case-box">
+              <p>各ラウンドでは、ケース文を読んで4つの選択肢から1つを選びます。選んだあと、本人の安心・学校のつながり・支援の見通しが少し変わります。</p>
+              <p class="question">ゲージは勝ち負けではなく、見方によって見えやすくなるものと置き去りになりやすいものを確かめるための補助です。</p>
+            </div>
+            <div class="intro-grid">
+              <div class="mini-card">
+                <strong>いいですね！</strong>
+                <span>このケースで中心に置きたい視点とよく重なっています。</span>
+              </div>
+              <div class="mini-card">
+                <strong>おしい！</strong>
+                <span>大切な視点があります。もう一つ足すと見え方が広がります。</span>
+              </div>
+              <div class="mini-card">
+                <strong>注目してみよう！</strong>
+                <span>その見方で見えにくくなるものを一緒に考えてみます。</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="roundScreen" class="screen" aria-labelledby="roundHeading">
+        <div class="panel">
+          <div class="panel-body screen-grid">
+            <div>
+              <p id="roundKicker" class="eyebrow">ラウンド 1</p>
+              <h2 id="roundHeading"></h2>
+            </div>
+            <div class="gauges" aria-label="状態ゲージ">
+              <div class="gauge">
+                <div class="gauge-head"><span>本人の安心</span><span id="gaugeSafetyValue">50</span></div>
+                <div class="gauge-track"><div id="gaugeSafety" class="gauge-fill"></div></div>
+              </div>
+              <div class="gauge">
+                <div class="gauge-head"><span>学校のつながり</span><span id="gaugeConnectionValue">50</span></div>
+                <div class="gauge-track"><div id="gaugeConnection" class="gauge-fill"></div></div>
+              </div>
+              <div class="gauge">
+                <div class="gauge-head"><span>支援の見通し</span><span id="gaugeOutlookValue">50</span></div>
+                <div class="gauge-track"><div id="gaugeOutlook" class="gauge-fill"></div></div>
+              </div>
+            </div>
+            <div class="case-box">
+              <p class="case-title">ケース</p>
+              <p id="caseText"></p>
+              <p id="questionText" class="question"></p>
+            </div>
+            <div id="choices" class="choices" aria-label="選択肢"></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="feedbackScreen" class="screen" aria-labelledby="feedbackHeading">
+        <div class="panel">
+          <div class="panel-body screen-grid">
+            <div>
+              <p id="feedbackKicker" class="eyebrow">フィードバック 1</p>
+              <h2 id="feedbackHeading">その見方から、何が見えやすくなる？</h2>
+            </div>
+            <div class="gauges" aria-label="更新後の状態ゲージ">
+              <div class="gauge">
+                <div class="gauge-head"><span>本人の安心</span><span id="fbGaugeSafetyValue">50</span></div>
+                <div class="gauge-track"><div id="fbGaugeSafety" class="gauge-fill"></div></div>
+              </div>
+              <div class="gauge">
+                <div class="gauge-head"><span>学校のつながり</span><span id="fbGaugeConnectionValue">50</span></div>
+                <div class="gauge-track"><div id="fbGaugeConnection" class="gauge-fill"></div></div>
+              </div>
+              <div class="gauge">
+                <div class="gauge-head"><span>支援の見通し</span><span id="fbGaugeOutlookValue">50</span></div>
+                <div class="gauge-track"><div id="fbGaugeOutlook" class="gauge-fill"></div></div>
+              </div>
+            </div>
+            <div class="feedback-card">
+              <span id="feedbackBadge" class="feedback-badge"></span>
+              <p id="selectedLine" class="selected-line"></p>
+              <p id="feedbackComment"></p>
+              <div id="deltaRow" class="delta-row" aria-label="状態の変化"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="resultScreen" class="screen" aria-labelledby="resultHeading">
+        <div class="panel">
+          <div class="panel-body screen-grid">
+            <div>
+              <p class="eyebrow">結果・診断</p>
+              <h2 id="resultHeading">あなたの見方の動き</h2>
+            </div>
+            <div class="result-layout">
+              <div class="score-box">
+                <p class="score-caption">合計スコア</p>
+                <p id="finalScore" class="score-number">0 / 8</p>
+                <p id="scoreMessage" class="score-caption"></p>
+              </div>
+              <div class="type-box">
+                <p class="score-caption">思考タイプ診断</p>
+                <p id="typeName" class="type-name"></p>
+                <p id="typeDescription"></p>
+              </div>
+            </div>
+            <div class="summary-box">
+              <h3>学びのまとめ</h3>
+              <p>特別支援学校は、在籍する子どもの学びの場であると同時に、地域の特別支援教育を支える拠点でもあります。センター的機能には、教員支援、相談、関係機関連携などが含まれます。</p>
+              <p>インクルーシブ教育は「同じ場にいるか」だけでなく、参加・保障・交流を含めて考えたいテーマです。自立も、すべてを一人で行うことだけではなく、必要な支援を受けながら参加していく力として捉えられます。</p>
+            </div>
+            <div class="summary-box">
+              <h3>次に考えたい問い</h3>
+              <p id="nextQuestion"></p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="reflectionScreen" class="screen" aria-labelledby="reflectionHeading">
+        <div class="panel">
+          <div class="panel-body screen-grid">
+            <div>
+              <p class="eyebrow">振り返り</p>
+              <h2 id="reflectionHeading">まだ納得できないことは？</h2>
+            </div>
+            <div class="case-box">
+              <p>最後に、いまの言葉で短く残してみてください。きれいにまとめなくても大丈夫です。</p>
+            </div>
+            <div class="reflection-fields">
+              <label>
+                このゲームで少し見方が変わったこと
+                <textarea id="reflectionChanged" placeholder="例：特別支援学校を、通う場所だけでなく地域の支援拠点としても見られるかもしれない。"></textarea>
+              </label>
+              <label>
+                まだ納得できないこと
+                <textarea id="reflectionUnclear" placeholder="例：同じ場で学ぶことと、本人に合った場を選ぶことは、どう両立できるのだろう。"></textarea>
+              </label>
+              <label>
+                もう少し知りたいこと
+                <textarea id="reflectionWant" placeholder="例：センター的機能が実際の学校現場でどう運用されているのか。"></textarea>
+              </label>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="bottom-actions" aria-label="操作">
+      <button id="backBtn" class="secondary-btn" type="button">戻る</button>
+      <button id="mainBtn" class="primary-btn" type="button">はじめる</button>
+    </footer>
+  </div>
+
+  <script>
+    const rounds = [
+      {
+        title: "センター的機能は本当に動くのか",
+        case: "ある小学校で、授業中に離席が増え、友だちとのトラブルも起きやすい子どもについて、担任が関わり方に悩んでいる。校内でも話し合っているが整理しきれず、特別支援学校に相談しようかという話が出ている。ただ、学校では「特別支援学校の先生も忙しいのでは」「本当に地域の相談まで対応できるのか」という声もある。",
+        question: "この場面で、まず大切にしたい見方はどれ？",
+        options: [
+          {
+            key: "A",
+            text: "制度として位置づけられているのだから、特別支援学校は当然十分に対応できるはずだ",
+            score: 1,
+            level: "near",
+            label: "おしい！",
+            comment: "制度上の役割に注目できている。ただし「制度にある=十分に機能している」とは限らない。現場の忙しさや地域差も一緒に考えたい。",
+            delta: { safety: 0, connection: 1, outlook: 0 },
+            tags: ["balancer", "realist"]
+          },
+          {
+            key: "B",
+            text: "特別支援学校に任せるかどうかより、校内で抱え込まず外部とつながる発想を持つことが大切だ",
+            score: 2,
+            level: "match",
+            label: "いいですね！",
+            comment: "特別支援学校のセンター的機能は、何でも任せることではなく、学校だけで抱え込まないためのつながりをつくる視点が大切。相談すること自体が支援のスタートになる。",
+            delta: { safety: 1, connection: 2, outlook: 2 },
+            tags: ["facilitator", "realist"]
+          },
+          {
+            key: "C",
+            text: "忙しいはずなので、相談はせず担任だけで工夫したほうが早い",
+            score: 1,
+            level: "near",
+            label: "おしい！",
+            comment: "校内で工夫する視点は大切。ただし、担任だけで抱えると見えなくなることもある。校内と外部をどうつなぐかまで考えられると一歩深まる。",
+            delta: { safety: 0, connection: -1, outlook: 0 },
+            tags: ["realist"]
+          },
+          {
+            key: "D",
+            text: "地域支援は理想論なので、センター的機能はあまり考えなくてよい",
+            score: 0,
+            level: "gap",
+            label: "注目してみよう！",
+            comment: "現実には負担があるとしても、だからこそセンター的機能の必要性や限界を考える価値がある。「理想論」で閉じずに見てみたい。",
+            delta: { safety: -1, connection: -1, outlook: -1 },
+            tags: ["reflector"]
+          }
+        ]
+      },
+      {
+        title: "インクルーシブ教育と特別支援学校",
+        case: "授業で「インクルーシブ教育とは、できるだけ同じ場で学ぶことだ」という説明を聞いた学生たちの間で、「それなら特別支援学校はインクルーシブ教育に反するのでは？」という疑問が出た。一方で、「一人ひとりに合った学びの場を保障することも大切では」という意見もある。",
+        question: "この疑問に向き合うとき、いちばん大切にしたい視点はどれ？",
+        options: [
+          {
+            key: "A",
+            text: "同じ場で学べないなら、インクルーシブ教育とは言えない",
+            score: 1,
+            level: "near",
+            label: "おしい！",
+            comment: "同じ場で学ぶことの価値に注目できている。ただ、それだけを中心にすると、本人に合った支援や学びの保障が見えにくくなることがある。",
+            delta: { safety: 0, connection: 0, outlook: 1 },
+            tags: ["balancer"]
+          },
+          {
+            key: "B",
+            text: "場が分かれていても、本人に合っていればそれで十分で、交流は特に重視しなくてよい",
+            score: 1,
+            level: "near",
+            label: "おしい！",
+            comment: "本人に合う場を大切にしている点は重要。ただし、交流や共同学習の視点が抜けると、学びの関係性が狭く見えてしまうことがある。",
+            delta: { safety: 1, connection: -1, outlook: 0 },
+            tags: ["person"]
+          },
+          {
+            key: "C",
+            text: "「同じ場」だけでなく、参加・保障・交流を含めて考える必要がある",
+            score: 2,
+            level: "match",
+            label: "いいですね！",
+            comment: "インクルーシブ教育は「同じ場かどうか」だけで決めきれない。参加できること、必要な支援があること、交流がどう保障されるかまで含めて考えたい。",
+            delta: { safety: 2, connection: 2, outlook: 2 },
+            tags: ["balancer", "facilitator", "person"]
+          },
+          {
+            key: "D",
+            text: "特別支援学校は専門性があるのだから、インクルーシブ教育との関係は考えなくてよい",
+            score: 0,
+            level: "gap",
+            label: "注目してみよう！",
+            comment: "専門性は大切だが、その専門性がどのように地域や交流につながるのかを考えることが、このテーマでは重要になる。",
+            delta: { safety: 0, connection: -1, outlook: -1 },
+            tags: ["reflector"]
+          }
+        ]
+      },
+      {
+        title: "『障害のある子どもが学ぶ学校』で足りる？",
+        case: "初学者向け説明として、「特別支援学校は障害のある子どもが学ぶ学校です」とまとめられていた。学生からは、「その説明だと、通常の学級、通級による指導、特別支援学級との関係が見えない」「本人や保護者の意向が抜けている」「地域を支える役割もあるのでは」という声が出た。",
+        question: "この説明を見直すなら、どの方向がいちばん大切？",
+        options: [
+          {
+            key: "A",
+            text: "初学者向けなら簡単であることが大切なので、このままでよい",
+            score: 1,
+            level: "near",
+            label: "おしい！",
+            comment: "シンプルさを大切にする姿勢は理解できる。ただし、シンプルにしすぎると、就学先の多様さや地域支援という重要な側面が見えにくくなる。",
+            delta: { safety: 0, connection: 0, outlook: 1 },
+            tags: ["realist"]
+          },
+          {
+            key: "B",
+            text: "在籍する子どもへの教育に加えて、地域支援の役割まで見える説明にしたい",
+            score: 2,
+            level: "match",
+            label: "いいですね！",
+            comment: "特別支援学校は「通う学校」としての面と「地域を支える拠点」としての面の両方から捉えると、説明がぐっと立体的になる。",
+            delta: { safety: 1, connection: 2, outlook: 2 },
+            tags: ["facilitator", "balancer"]
+          },
+          {
+            key: "C",
+            text: "通うのは障害のある子どもなのだから、細かい説明はなくても大きな問題はない",
+            score: 0,
+            level: "gap",
+            label: "注目してみよう！",
+            comment: "この見方では、本人・保護者の意向や、通常の学級・通級・特別支援学級との関係が見えにくくなる。",
+            delta: { safety: -1, connection: -1, outlook: -1 },
+            tags: ["reflector"]
+          },
+          {
+            key: "D",
+            text: "まず障害の種類をもっと細かく列挙すれば十分である",
+            score: 1,
+            level: "near",
+            label: "おしい！",
+            comment: "説明を具体化しようとする視点はよい。ただ、分類を細かくするだけでは、役割の広がりや就学の考え方までは見えにくい。",
+            delta: { safety: 0, connection: 0, outlook: 1 },
+            tags: ["balancer"]
+          }
+        ]
+      },
+      {
+        title: "自立とは何か",
+        case: "特別支援学校の説明で、「学習上・生活上の困難を改善・克服し、自立を図る」と書かれていた。これに対して学生から、「困難をなくすことが目的のように聞こえる」「自立は、一人でできることを増やすことだけではないのでは」「助けを求めたり支援を使ったりする力も自立では」という声が出た。",
+        question: "この場面で考えたい『自立』の捉え方として、最も授業に合うものはどれ？",
+        options: [
+          {
+            key: "A",
+            text: "できるだけ一人でできることを増やすことが、自立の中心である",
+            score: 1,
+            level: "near",
+            label: "おしい！",
+            comment: "一人でできることに注目する見方は分かりやすい。ただ、それだけだと、支援を使う力や参加し続ける力が見えにくくなる。",
+            delta: { safety: 0, connection: 0, outlook: 1 },
+            tags: ["realist"]
+          },
+          {
+            key: "B",
+            text: "困難を完全に克服できなくても、支援を使いながら参加していくことも自立である",
+            score: 2,
+            level: "match",
+            label: "いいですね！",
+            comment: "自立は「全部一人でできること」ではなく、必要な支援を使いながら生活や学びに参加できることとして捉えると、見方が広がる。",
+            delta: { safety: 2, connection: 1, outlook: 2 },
+            tags: ["creator", "person"]
+          },
+          {
+            key: "C",
+            text: "自立は抽象的なので、授業では深く扱わなくてよい",
+            score: 0,
+            level: "gap",
+            label: "注目してみよう！",
+            comment: "自立の意味づけは、この授業テーマの中心の一つ。曖昧だからこそ、どう捉えるかを考える価値がある。",
+            delta: { safety: -1, connection: 0, outlook: -1 },
+            tags: ["reflector"]
+          },
+          {
+            key: "D",
+            text: "とにかく生活面の力だけを育てれば、自立といえる",
+            score: 1,
+            level: "near",
+            label: "おしい！",
+            comment: "生活面への注目は大切。ただし、自立は生活だけでなく、学習、参加、関係、支援の使い方まで含めて考えられる。",
+            delta: { safety: 0, connection: -1, outlook: 0 },
+            tags: ["realist"]
+          }
+        ]
+      }
+    ];
+
+    const typeProfiles = {
+      facilitator: {
+        name: "つながり設計ファシリテータータイプ",
+        description: "学校・保護者・関係機関のつながりに目が向きやすいタイプです。一つの場所や一人の先生に閉じず、支援が続く形を考えようとしています。",
+        question: "センター的機能は、現場でどこまで実現できているのだろう？"
+      },
+      person: {
+        name: "本人視点ていねい観察タイプ",
+        description: "本人の安心や学びやすさを起点に考えるのが得意なタイプです。その視点に、学校全体や地域とのつながりを重ねると、さらに見通しが広がります。",
+        question: "本人に合った学びの場を、誰がどう決めるのだろう？"
+      },
+      realist: {
+        name: "現場リアリストタイプ",
+        description: "理想だけでなく、人員や時間、運用可能性に目が向くタイプです。現場の制約を見ながら、そこで何をつなげられるかを考える力があります。",
+        question: "センター的機能は、現場でどこまで実現できているのだろう？"
+      },
+      balancer: {
+        name: "学びの場バランサータイプ",
+        description: "通常の学級、特別支援学級、通級、特別支援学校の関係をバランスよく考えやすいタイプです。場の違いだけでなく、参加や交流の質にも目を向けられそうです。",
+        question: "特別支援学校と通常の学校の交流は、どう設計すればよいのだろう？"
+      },
+      creator: {
+        name: "自立支援クリエイタータイプ",
+        description: "「一人でできる」だけではなく、支援を使いながら参加する力として自立を考えられるタイプです。困難をなくすことより、参加し続ける条件に目が向いています。",
+        question: "「支援を使えること」は、なぜ自立につながるのだろう？"
+      },
+      reflector: {
+        name: "問いを残せるリフレクタータイプ",
+        description: "一つに決めきらず、違和感を持ち続けながら考えられるタイプです。迷いは弱さではなく、制度説明と現場の現実をつなぎ直す入口になります。",
+        question: "本人に合った学びの場を、誰がどう決めるのだろう？"
+      }
+    };
+
+    const state = {
+      screen: "title",
+      roundIndex: 0,
+      selectedIndex: null,
+      score: 0,
+      gauges: {
+        safety: 50,
+        connection: 50,
+        outlook: 50
+      },
+      choices: [],
+      tagCounts: {
+        facilitator: 0,
+        person: 0,
+        realist: 0,
+        balancer: 0,
+        creator: 0,
+        reflector: 0
+      }
+    };
+
+    const screens = {
+      title: document.getElementById("titleScreen"),
+      howto: document.getElementById("howtoScreen"),
+      round: document.getElementById("roundScreen"),
+      feedback: document.getElementById("feedbackScreen"),
+      result: document.getElementById("resultScreen"),
+      reflection: document.getElementById("reflectionScreen")
+    };
+
+    const mainBtn = document.getElementById("mainBtn");
+    const backBtn = document.getElementById("backBtn");
+    const scoreNow = document.getElementById("scoreNow");
+    const progressArea = document.getElementById("progressArea");
+    const progressText = document.getElementById("progressText");
+    const progressFill = document.getElementById("progressFill");
+    const progressTrack = document.querySelector(".progress-track");
+
+    function clamp(value, min, max) {
+      return Math.max(min, Math.min(max, value));
+    }
+
+    function showScreen(name) {
+      Object.values(screens).forEach((screen) => screen.classList.remove("is-active"));
+      screens[name].classList.add("is-active");
+      state.screen = name;
+      updateChrome();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function updateChrome() {
+      scoreNow.textContent = state.score;
+      const progressVisible = ["round", "feedback", "result", "reflection"].includes(state.screen);
+      progressArea.classList.toggle("is-visible", progressVisible);
+
+      let progressValue = state.roundIndex;
+      if (state.screen === "feedback") progressValue = state.roundIndex + 1;
+      if (state.screen === "result" || state.screen === "reflection") progressValue = 4;
+      if (state.screen === "round") progressValue = state.roundIndex;
+
+      progressText.textContent = state.screen === "result" || state.screen === "reflection"
+        ? "4ラウンド完了"
+        : `ラウンド ${Math.min(state.roundIndex + 1, 4)} / 4`;
+      progressFill.style.width = `${(progressValue / 4) * 100}%`;
+      progressTrack.setAttribute("aria-valuenow", String(progressValue));
+
+      backBtn.style.display = state.screen === "title" ? "none" : "inline-flex";
+
+      if (state.screen === "title") {
+        mainBtn.textContent = "はじめる";
+        mainBtn.disabled = false;
+      } else if (state.screen === "howto") {
+        mainBtn.textContent = "ラウンド1へ";
+        mainBtn.disabled = false;
+      } else if (state.screen === "round") {
+        mainBtn.textContent = "この見方で進む";
+        mainBtn.disabled = state.selectedIndex === null;
+      } else if (state.screen === "feedback") {
+        mainBtn.textContent = state.roundIndex < rounds.length - 1 ? "次のラウンドへ" : "結果を見る";
+        mainBtn.disabled = false;
+      } else if (state.screen === "result") {
+        mainBtn.textContent = "振り返りを書く";
+        mainBtn.disabled = false;
+      } else if (state.screen === "reflection") {
+        mainBtn.textContent = "もう一度あそぶ";
+        mainBtn.disabled = false;
+      }
+    }
+
+    function updateGaugeElements(prefix = "") {
+      const map = [
+        ["Safety", "safety"],
+        ["Connection", "connection"],
+        ["Outlook", "outlook"]
+      ];
+
+      map.forEach(([elementName, key]) => {
+        const fill = document.getElementById(`${prefix}Gauge${elementName}`);
+        const value = document.getElementById(`${prefix}Gauge${elementName}Value`);
+        fill.style.width = `${state.gauges[key]}%`;
+        value.textContent = state.gauges[key];
+      });
+    }
+
+    function renderRound() {
+      const round = rounds[state.roundIndex];
+      state.selectedIndex = null;
+      document.getElementById("roundKicker").textContent = `ラウンド ${state.roundIndex + 1}`;
+      document.getElementById("roundHeading").textContent = round.title;
+      document.getElementById("caseText").textContent = round.case;
+      document.getElementById("questionText").textContent = round.question;
+      updateGaugeElements("");
+
+      const choicesEl = document.getElementById("choices");
+      choicesEl.innerHTML = "";
+
+      round.options.forEach((option, index) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "choice-card";
+        button.setAttribute("aria-pressed", "false");
+        button.innerHTML = `
+          <span class="choice-letter" aria-hidden="true">${option.key}</span>
+          <span class="choice-text">${option.text}</span>
+        `;
+        button.addEventListener("click", () => selectChoice(index));
+        choicesEl.appendChild(button);
+      });
+
+      updateChrome();
+    }
+
+    function selectChoice(index) {
+      state.selectedIndex = index;
+      document.querySelectorAll(".choice-card").forEach((card, cardIndex) => {
+        const selected = cardIndex === index;
+        card.classList.toggle("is-selected", selected);
+        card.setAttribute("aria-pressed", String(selected));
+      });
+      updateChrome();
+    }
+
+    function applyChoice() {
+      const round = rounds[state.roundIndex];
+      const option = round.options[state.selectedIndex];
+
+      state.score += option.score;
+      state.choices.push({
+        roundIndex: state.roundIndex,
+        optionKey: option.key,
+        score: option.score,
+        level: option.level,
+        tags: option.tags
+      });
+
+      option.tags.forEach((tag) => {
+        state.tagCounts[tag] += 1;
+      });
+
+      state.gauges.safety = clamp(state.gauges.safety + option.delta.safety * 9, 0, 100);
+      state.gauges.connection = clamp(state.gauges.connection + option.delta.connection * 9, 0, 100);
+      state.gauges.outlook = clamp(state.gauges.outlook + option.delta.outlook * 9, 0, 100);
+
+      renderFeedback(option);
+      showScreen("feedback");
+    }
+
+    function getToneClass(level) {
+      if (level === "match") return "tone-good";
+      if (level === "near") return "tone-warn";
+      return "tone-bad";
+    }
+
+    function getLevelText(level) {
+      if (level === "match") return "一致";
+      if (level === "near") return "近い";
+      return "ずれ";
+    }
+
+    function renderFeedback(option) {
+      document.getElementById("feedbackKicker").textContent = `フィードバック ${state.roundIndex + 1}`;
+
+      const badge = document.getElementById("feedbackBadge");
+      badge.className = `feedback-badge ${getToneClass(option.level)}`;
+      badge.textContent = `${option.label} 一致度：${getLevelText(option.level)}`;
+
+      document.getElementById("selectedLine").textContent = `選んだ見方：${option.key}. ${option.text}`;
+      document.getElementById("feedbackComment").textContent = option.comment;
+
+      const deltaRow = document.getElementById("deltaRow");
+      deltaRow.innerHTML = "";
+      [
+        ["本人の安心", option.delta.safety],
+        ["学校のつながり", option.delta.connection],
+        ["支援の見通し", option.delta.outlook]
+      ].forEach(([label, value]) => {
+        const chip = document.createElement("span");
+        chip.className = `delta-chip ${value < 0 ? "minus" : ""}`;
+        chip.textContent = `${label} ${value > 0 ? "+" : ""}${value}`;
+        deltaRow.appendChild(chip);
+      });
+
+      requestAnimationFrame(() => updateGaugeElements("fb"));
+    }
+
+    function renderResult() {
+      const finalScore = document.getElementById("finalScore");
+      const scoreMessage = document.getElementById("scoreMessage");
+      const type = diagnoseType();
+
+      finalScore.textContent = `${state.score} / 8`;
+      scoreMessage.textContent = getScoreMessage(state.score);
+      document.getElementById("typeName").textContent = type.name;
+      document.getElementById("typeDescription").textContent = type.description;
+      document.getElementById("nextQuestion").textContent = type.question;
+    }
+
+    function getScoreMessage(score) {
+      if (score <= 2) return "まだこれから！";
+      if (score <= 4) return "見方が広がってきた！";
+      if (score <= 6) return "かなりつながりが見えてきた！";
+      return "問いを深く考えられている！";
+    }
+
+    function diagnoseType() {
+      const counts = { ...state.tagCounts };
+
+      if (state.score <= 3 && counts.reflector >= 2) {
+        return typeProfiles.reflector;
+      }
+
+      if (counts.creator >= 1 && state.choices.some((choice) => choice.roundIndex === 3 && choice.optionKey === "B")) {
+        return typeProfiles.creator;
+      }
+
+      const priority = ["facilitator", "person", "realist", "balancer", "creator", "reflector"];
+      let bestKey = priority[0];
+
+      priority.forEach((key) => {
+        if (counts[key] > counts[bestKey]) {
+          bestKey = key;
+        }
+      });
+
+      if (state.score >= 7 && counts.facilitator >= 2) {
+        bestKey = "facilitator";
+      } else if (state.score >= 7 && counts.balancer >= 2) {
+        bestKey = "balancer";
+      } else if (counts.person >= 2) {
+        bestKey = "person";
+      } else if (counts.realist >= 2 && state.score <= 5) {
+        bestKey = "realist";
+      } else if (state.score <= 2) {
+        bestKey = "reflector";
+      }
+
+      return typeProfiles[bestKey];
+    }
+
+    function goForward() {
+      if (state.screen === "title") {
+        showScreen("howto");
+      } else if (state.screen === "howto") {
+        state.roundIndex = 0;
+        renderRound();
+        showScreen("round");
+      } else if (state.screen === "round") {
+        if (state.selectedIndex !== null) applyChoice();
+      } else if (state.screen === "feedback") {
+        if (state.roundIndex < rounds.length - 1) {
+          state.roundIndex += 1;
+          renderRound();
+          showScreen("round");
+        } else {
+          renderResult();
+          showScreen("result");
+        }
+      } else if (state.screen === "result") {
+        showScreen("reflection");
+      } else if (state.screen === "reflection") {
+        resetGame();
+      }
+    }
+
+    function goBack() {
+      if (state.screen === "howto") {
+        showScreen("title");
+      } else if (state.screen === "round") {
+        if (state.roundIndex === 0 && state.choices.length === 0) {
+          showScreen("howto");
+        }
+      } else if (state.screen === "feedback") {
+        showScreen("round");
+      } else if (state.screen === "result") {
+        state.roundIndex = rounds.length - 1;
+        showScreen("feedback");
+      } else if (state.screen === "reflection") {
+        showScreen("result");
+      }
+    }
+
+    function resetGame() {
+      state.screen = "title";
+      state.roundIndex = 0;
+      state.selectedIndex = null;
+      state.score = 0;
+      state.gauges = { safety: 50, connection: 50, outlook: 50 };
+      state.choices = [];
+      state.tagCounts = {
+        facilitator: 0,
+        person: 0,
+        realist: 0,
+        balancer: 0,
+        creator: 0,
+        reflector: 0
+      };
+
+      document.getElementById("reflectionChanged").value = "";
+      document.getElementById("reflectionUnclear").value = "";
+      document.getElementById("reflectionWant").value = "";
+      showScreen("title");
+    }
+
+    mainBtn.addEventListener("click", goForward);
+    backBtn.addEventListener("click", goBack);
+
+    updateChrome();
+  </script>
+</body>
+</html>
