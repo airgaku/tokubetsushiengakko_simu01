@@ -7,59 +7,48 @@
   <style>
     :root {
       --bg: #f5faf9;
-      --panel: #ffffff;
-      --panel-soft: #eef7f6;
-      --line: #d6e7e5;
-      --text: #1f3437;
-      --muted: #5e7478;
-      --main: #1d8a8a;
-      --main-dark: #126b70;
+      --card: #ffffff;
+      --soft: #edf7f6;
+      --line: #d4e7e4;
+      --text: #203437;
+      --muted: #60777b;
+      --main: #168684;
+      --main-dark: #0c686e;
       --main-soft: #dff3f1;
-      --good: #2f9b63;
-      --good-soft: #e4f6ec;
-      --warn: #c99719;
-      --warn-soft: #fff5d7;
-      --bad: #d35b50;
-      --bad-soft: #fde9e7;
-      --shadow: 0 18px 46px rgba(31, 52, 55, 0.12);
+      --good: #2e9b62;
+      --good-bg: #e6f6ee;
+      --warn: #9b7110;
+      --warn-bg: #fff4cf;
+      --bad: #c95048;
+      --bad-bg: #fde9e7;
+      --shadow: 0 18px 42px rgba(22, 60, 62, 0.13);
       --radius: 8px;
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
-    html {
+    html, body {
+      margin: 0;
       min-height: 100%;
       background: var(--bg);
-    }
-
-    body {
-      margin: 0;
-      min-height: 100vh;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       color: var(--text);
-      background:
-        radial-gradient(circle at top left, rgba(129, 205, 198, 0.18), transparent 34rem),
-        linear-gradient(180deg, #f8fcfb 0%, var(--bg) 100%);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       line-height: 1.75;
       letter-spacing: 0;
     }
 
-    button,
-    input,
-    textarea {
-      font: inherit;
+    body {
+      background:
+        radial-gradient(circle at 12% 0%, rgba(84, 185, 176, 0.2), transparent 30rem),
+        linear-gradient(180deg, #fbfefe 0%, var(--bg) 70%);
     }
 
-    button {
-      cursor: pointer;
-    }
+    button, textarea { font: inherit; }
+    button { cursor: pointer; }
 
     button:focus-visible,
-    input:focus-visible,
     textarea:focus-visible {
-      outline: 3px solid rgba(29, 138, 138, 0.35);
+      outline: 3px solid rgba(22, 134, 132, 0.34);
       outline-offset: 3px;
     }
 
@@ -69,61 +58,56 @@
       grid-template-rows: auto 1fr auto;
     }
 
-    .topbar {
-      padding: 18px clamp(16px, 4vw, 40px) 10px;
+    header {
+      padding: 16px clamp(16px, 4vw, 40px) 8px;
     }
 
-    .topbar-inner {
-      max-width: 1020px;
+    .header-inner {
+      width: min(100%, 1040px);
       margin: 0 auto;
       display: grid;
       gap: 10px;
     }
 
-    .brand {
+    .brand-row {
       display: flex;
       justify-content: space-between;
+      gap: 12px;
       align-items: flex-start;
-      gap: 14px;
     }
 
-    .brand-title {
+    h1 {
       margin: 0;
-      font-size: clamp(1.05rem, 2.5vw, 1.35rem);
+      font-size: clamp(1.05rem, 2.6vw, 1.35rem);
       line-height: 1.35;
-      font-weight: 800;
       color: var(--main-dark);
     }
 
-    .brand-subtitle {
-      margin: 3px 0 0;
+    .subtitle {
+      margin: 2px 0 0;
       color: var(--muted);
-      font-size: 0.88rem;
+      font-size: 0.9rem;
       line-height: 1.55;
     }
 
     .score-pill {
-      flex: 0 0 auto;
-      min-width: 82px;
+      min-width: 86px;
       padding: 7px 12px;
-      border: 1px solid var(--line);
       border-radius: 999px;
-      background: rgba(255, 255, 255, 0.82);
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.86);
       color: var(--main-dark);
-      font-weight: 800;
+      font-weight: 900;
       text-align: center;
-      font-size: 0.92rem;
+      white-space: nowrap;
     }
 
-    .progress-area {
+    .progress-wrap {
       display: none;
-      gap: 8px;
-      align-items: center;
+      gap: 7px;
     }
 
-    .progress-area.is-visible {
-      display: grid;
-    }
+    .progress-wrap.visible { display: grid; }
 
     .progress-label {
       display: flex;
@@ -136,148 +120,130 @@
     .progress-track {
       height: 10px;
       border-radius: 999px;
-      background: #ddeceb;
+      background: #dfedec;
       overflow: hidden;
     }
 
     .progress-fill {
-      width: 0%;
       height: 100%;
+      width: 0%;
       border-radius: inherit;
-      background: linear-gradient(90deg, #5dbbb4, var(--main));
-      transition: width 420ms ease;
+      background: linear-gradient(90deg, #6dc6bc, var(--main));
+      transition: width 360ms ease;
     }
 
     main {
       display: grid;
       place-items: center;
-      padding: 18px clamp(16px, 4vw, 40px) 20px;
+      padding: 18px clamp(16px, 4vw, 40px) 22px;
     }
 
     .screen {
       width: min(100%, 980px);
       display: none;
-      animation: fadeSlide 320ms ease both;
+      animation: show 260ms ease both;
     }
 
-    .screen.is-active {
-      display: block;
-    }
+    .screen.active { display: block; }
 
-    @keyframes fadeSlide {
-      from {
-        opacity: 0;
-        transform: translateY(12px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+    @keyframes show {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     .panel {
-      background: rgba(255, 255, 255, 0.94);
       border: 1px solid var(--line);
       border-radius: var(--radius);
+      background: rgba(255,255,255,0.95);
       box-shadow: var(--shadow);
       overflow: hidden;
     }
 
     .panel-body {
-      padding: clamp(22px, 4vw, 40px);
+      padding: clamp(21px, 4vw, 40px);
+      display: grid;
+      gap: 18px;
     }
 
     .hero {
-      min-height: min(620px, calc(100vh - 170px));
-      display: grid;
+      min-height: min(610px, calc(100vh - 170px));
       align-content: center;
-      gap: 22px;
     }
 
     .eyebrow {
-      margin: 0 0 8px;
+      margin: 0 0 6px;
       color: var(--main-dark);
-      font-weight: 800;
+      font-weight: 900;
       font-size: 0.9rem;
     }
 
     h2 {
       margin: 0;
-      font-size: clamp(1.55rem, 5vw, 2.6rem);
-      line-height: 1.25;
-      letter-spacing: 0;
+      font-size: clamp(1.45rem, 4.8vw, 2.55rem);
+      line-height: 1.28;
     }
 
     h3 {
       margin: 0;
-      font-size: clamp(1.2rem, 3vw, 1.55rem);
+      font-size: clamp(1.16rem, 3vw, 1.45rem);
       line-height: 1.45;
-      letter-spacing: 0;
+      color: var(--main-dark);
     }
 
-    p {
-      margin: 0;
-    }
+    p { margin: 0; }
 
     .lead {
-      color: var(--muted);
-      font-size: clamp(1rem, 2.4vw, 1.12rem);
       max-width: 760px;
+      color: var(--muted);
+      font-size: clamp(1rem, 2.4vw, 1.13rem);
     }
 
-    .intro-grid {
+    .three-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 12px;
-      margin-top: 4px;
+    }
+
+    .mini-card,
+    .case-box,
+    .feedback-box,
+    .result-box {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fbfefe;
     }
 
     .mini-card {
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      background: var(--panel-soft);
       padding: 14px;
+      background: var(--soft);
     }
 
     .mini-card strong {
       display: block;
+      margin-bottom: 3px;
       color: var(--main-dark);
-      margin-bottom: 4px;
     }
 
     .mini-card span {
       display: block;
       color: var(--muted);
       font-size: 0.92rem;
-      line-height: 1.6;
+      line-height: 1.62;
     }
 
-    .screen-grid {
-      display: grid;
-      gap: 18px;
-    }
-
-    .case-box {
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      background: #fbfefe;
+    .case-box,
+    .feedback-box,
+    .result-box {
       padding: clamp(16px, 3vw, 22px);
-    }
-
-    .case-title {
-      margin: 0 0 8px;
-      color: var(--main-dark);
-      font-weight: 800;
-      font-size: 0.95rem;
+      display: grid;
+      gap: 12px;
     }
 
     .question {
-      margin-top: 16px;
-      padding-top: 14px;
+      padding-top: 13px;
       border-top: 1px solid var(--line);
-      font-weight: 800;
-      color: var(--text);
-      font-size: clamp(1.02rem, 2.5vw, 1.18rem);
+      font-weight: 900;
+      font-size: clamp(1.02rem, 2.5vw, 1.16rem);
     }
 
     .gauges {
@@ -289,33 +255,34 @@
     .gauge {
       border: 1px solid var(--line);
       border-radius: var(--radius);
-      background: var(--panel);
+      background: var(--card);
       padding: 12px;
     }
 
-    .gauge-head {
+    .gauge-top {
       display: flex;
       justify-content: space-between;
       gap: 8px;
       margin-bottom: 8px;
       color: var(--muted);
+      font-weight: 800;
       font-size: 0.86rem;
-      font-weight: 700;
     }
 
-    .gauge-track {
+    .bar {
       height: 9px;
       border-radius: 999px;
       background: #e2eeee;
       overflow: hidden;
     }
 
-    .gauge-fill {
+    .bar > span {
+      display: block;
       height: 100%;
       width: 50%;
       border-radius: inherit;
-      background: linear-gradient(90deg, #75c8bd, var(--main));
-      transition: width 520ms ease;
+      background: linear-gradient(90deg, #72c7bd, var(--main));
+      transition: width 440ms ease;
     }
 
     .choices {
@@ -324,92 +291,69 @@
       gap: 12px;
     }
 
-    .choice-card {
+    .choice {
       width: 100%;
-      min-height: 112px;
-      text-align: left;
+      min-height: 108px;
       border: 1px solid var(--line);
       border-radius: var(--radius);
-      background: var(--panel);
+      background: var(--card);
       color: var(--text);
+      text-align: left;
       padding: 16px;
       display: grid;
-      grid-template-columns: auto 1fr;
+      grid-template-columns: 32px 1fr;
       gap: 12px;
       align-items: start;
-      transition: transform 160ms ease, border-color 160ms ease, box-shadow 160ms ease, background 160ms ease;
+      transition: transform 150ms ease, box-shadow 150ms ease, border-color 150ms ease, background 150ms ease;
     }
 
-    .choice-card:hover {
+    .choice:hover {
       transform: translateY(-2px) scale(1.01);
-      border-color: #9bcfca;
-      box-shadow: 0 12px 24px rgba(31, 52, 55, 0.1);
+      border-color: #95cec8;
+      box-shadow: 0 12px 24px rgba(22, 60, 62, 0.1);
     }
 
-    .choice-card.is-selected {
-      border-color: var(--main);
+    .choice.selected {
       background: var(--main-soft);
-      box-shadow: 0 12px 26px rgba(29, 138, 138, 0.17);
+      border-color: var(--main);
+      box-shadow: 0 12px 25px rgba(22, 134, 132, 0.16);
     }
 
-    .choice-letter {
-      width: 30px;
-      height: 30px;
-      border-radius: 50%;
+    .letter {
+      width: 32px;
+      height: 32px;
       display: grid;
       place-items: center;
-      background: #edf6f5;
+      border-radius: 50%;
+      border: 1px solid #c7e2df;
+      background: #eef8f7;
       color: var(--main-dark);
       font-weight: 900;
-      border: 1px solid #c8e3e0;
     }
 
     .choice-text {
+      font-weight: 680;
       line-height: 1.65;
-      font-weight: 650;
     }
 
-    .feedback-badge {
+    .badge {
       display: inline-flex;
-      align-items: center;
       width: fit-content;
       min-height: 34px;
+      align-items: center;
       padding: 5px 12px;
       border-radius: 999px;
-      font-weight: 900;
       border: 1px solid transparent;
+      font-weight: 900;
     }
 
-    .tone-good {
-      color: var(--good);
-      background: var(--good-soft);
-      border-color: #b9e2ca;
-    }
+    .good { color: var(--good); background: var(--good-bg); border-color: #b9e2ca; }
+    .warn { color: var(--warn); background: var(--warn-bg); border-color: #edd78a; }
+    .bad { color: var(--bad); background: var(--bad-bg); border-color: #efc0bc; }
 
-    .tone-warn {
-      color: #89670c;
-      background: var(--warn-soft);
-      border-color: #efd98e;
-    }
-
-    .tone-bad {
-      color: var(--bad);
-      background: var(--bad-soft);
-      border-color: #efc0bc;
-    }
-
-    .feedback-card {
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      background: #fbfefe;
-      padding: clamp(18px, 3vw, 26px);
-      display: grid;
-      gap: 14px;
-    }
-
-    .selected-line {
+    .muted {
       color: var(--muted);
-      font-size: 0.95rem;
+      font-size: 0.94rem;
     }
 
     .delta-row {
@@ -418,61 +362,40 @@
       gap: 8px;
     }
 
-    .delta-chip {
+    .delta {
       padding: 6px 10px;
       border-radius: 999px;
       border: 1px solid var(--line);
-      background: var(--panel-soft);
+      background: var(--soft);
       color: var(--main-dark);
       font-size: 0.88rem;
-      font-weight: 800;
+      font-weight: 900;
     }
 
-    .delta-chip.minus {
+    .delta.minus {
+      color: #9b4c46;
       background: #f7eeee;
-      color: #9d4f49;
-      border-color: #ebcfcc;
+      border-color: #e8cbc8;
     }
 
-    .result-layout {
+    .result-grid {
       display: grid;
       grid-template-columns: 0.9fr 1.1fr;
       gap: 14px;
-      align-items: stretch;
-    }
-
-    .score-box,
-    .type-box,
-    .summary-box {
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      background: #fbfefe;
-      padding: 18px;
     }
 
     .score-number {
       font-size: clamp(2.4rem, 8vw, 4rem);
-      line-height: 1.1;
-      font-weight: 900;
+      line-height: 1.05;
       color: var(--main-dark);
-    }
-
-    .score-caption {
-      color: var(--muted);
-      font-weight: 800;
+      font-weight: 950;
     }
 
     .type-name {
-      margin-top: 8px;
-      font-size: clamp(1.25rem, 3vw, 1.65rem);
-      font-weight: 900;
-      color: var(--main-dark);
+      font-size: clamp(1.22rem, 3vw, 1.65rem);
       line-height: 1.35;
-    }
-
-    .summary-box {
-      display: grid;
-      gap: 10px;
+      color: var(--main-dark);
+      font-weight: 950;
     }
 
     .reflection-fields {
@@ -484,24 +407,23 @@
       display: grid;
       gap: 6px;
       color: var(--main-dark);
-      font-weight: 800;
+      font-weight: 900;
     }
 
     textarea {
       width: 100%;
       min-height: 78px;
       resize: vertical;
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      background: #fbfefe;
       padding: 12px;
+      border-radius: var(--radius);
+      border: 1px solid var(--line);
+      background: #fbfefe;
       color: var(--text);
       line-height: 1.6;
     }
 
-    .bottom-actions {
-      max-width: 1020px;
-      width: 100%;
+    footer {
+      width: min(100%, 1040px);
       margin: 0 auto;
       padding: 0 clamp(16px, 4vw, 40px) clamp(18px, 4vw, 34px);
       display: flex;
@@ -510,99 +432,63 @@
       flex-wrap: wrap;
     }
 
-    .primary-btn,
-    .secondary-btn {
+    .primary,
+    .secondary {
       min-height: 48px;
-      border-radius: var(--radius);
       padding: 11px 18px;
+      border-radius: var(--radius);
       font-weight: 900;
       border: 1px solid transparent;
-      transition: transform 160ms ease, box-shadow 160ms ease, background 160ms ease;
+      transition: background 150ms ease, transform 150ms ease, box-shadow 150ms ease;
     }
 
-    .primary-btn {
+    .primary {
+      color: white;
       background: var(--main);
-      color: #ffffff;
-      box-shadow: 0 12px 24px rgba(29, 138, 138, 0.22);
+      box-shadow: 0 12px 24px rgba(22, 134, 132, 0.22);
     }
 
-    .primary-btn:hover {
+    .primary:hover:not(:disabled) {
       background: var(--main-dark);
       transform: translateY(-1px);
     }
 
-    .primary-btn:disabled {
+    .primary:disabled {
+      opacity: 0.46;
       cursor: not-allowed;
-      opacity: 0.45;
-      transform: none;
       box-shadow: none;
     }
 
-    .secondary-btn {
-      background: #ffffff;
+    .secondary {
       color: var(--main-dark);
+      background: white;
       border-color: var(--line);
     }
 
-    .secondary-btn:hover {
-      background: var(--panel-soft);
+    .secondary:hover {
+      background: var(--soft);
       transform: translateY(-1px);
     }
 
-    .visually-hidden {
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      padding: 0;
-      margin: -1px;
-      overflow: hidden;
-      clip: rect(0, 0, 0, 0);
-      white-space: nowrap;
-      border: 0;
-    }
-
     @media (max-width: 760px) {
-      .brand {
+      .brand-row,
+      .three-grid,
+      .gauges,
+      .choices,
+      .result-grid {
+        grid-template-columns: 1fr;
         display: grid;
       }
 
-      .score-pill {
-        justify-self: start;
-      }
-
-      .intro-grid,
-      .gauges,
-      .choices,
-      .result-layout {
-        grid-template-columns: 1fr;
-      }
-
-      .choice-card {
-        min-height: 86px;
-      }
-
-      .panel-body {
-        padding: 20px;
-      }
-
-      main {
-        align-items: start;
-      }
-
-      .bottom-actions {
-        justify-content: stretch;
-      }
-
-      .primary-btn,
-      .secondary-btn {
-        width: 100%;
-      }
+      .score-pill { justify-self: start; }
+      .choice { min-height: 84px; }
+      main { align-items: start; }
+      footer { justify-content: stretch; }
+      .primary, .secondary { width: 100%; }
     }
 
     @media (prefers-reduced-motion: reduce) {
-      *,
-      *::before,
-      *::after {
+      *, *::before, *::after {
         animation-duration: 1ms !important;
         transition-duration: 1ms !important;
         scroll-behavior: auto !important;
@@ -612,16 +498,16 @@
 </head>
 <body>
   <div class="app">
-    <header class="topbar">
-      <div class="topbar-inner">
-        <div class="brand">
+    <header>
+      <div class="header-inner">
+        <div class="brand-row">
           <div>
-            <h1 class="brand-title">つなぐ？わける？ 特別支援学校シミュレーター</h1>
-            <p class="brand-subtitle">特別支援学校・センター的機能・インクルーシブ教育を、ケースから考える5分ゲーム</p>
+            <h1>つなぐ？わける？ 特別支援学校シミュレーター</h1>
+            <p class="subtitle">特別支援学校・センター的機能・インクルーシブ教育を、ケースから考える5分ゲーム</p>
           </div>
           <div class="score-pill" aria-live="polite"><span id="scoreNow">0</span> / 8 点</div>
         </div>
-        <div id="progressArea" class="progress-area" aria-label="進捗">
+        <div id="progressWrap" class="progress-wrap" aria-label="進捗">
           <div class="progress-label">
             <span id="progressText">ラウンド 1 / 4</span>
             <span>迷いながら考える時間</span>
@@ -634,148 +520,104 @@
     </header>
 
     <main>
-      <section id="titleScreen" class="screen is-active" aria-labelledby="titleHeading">
+      <section id="title" class="screen active">
         <div class="panel hero">
-          <div class="panel-body screen-grid">
+          <div class="panel-body">
             <div>
               <p class="eyebrow">大学授業向け学習ゲーム</p>
-              <h2 id="titleHeading">つなぐ？わける？<br>特別支援学校シミュレーター</h2>
+              <h2>つなぐ？わける？<br>特別支援学校シミュレーター</h2>
             </div>
             <p class="lead">4つのケースを読み、いま大切にしたい見方を選びます。正解を当てるより、本人・学校・地域のつながりがどう見え方を変えるかを試してみるゲームです。</p>
-            <div class="intro-grid" aria-label="このゲームで見る3つの状態">
-              <div class="mini-card">
-                <strong>本人の安心</strong>
-                <span>子どもが学びや生活に向かいやすい状態かを見ます。</span>
-              </div>
-              <div class="mini-card">
-                <strong>学校のつながり</strong>
-                <span>担任や校内だけでなく、外部とも考えられているかを見ます。</span>
-              </div>
-              <div class="mini-card">
-                <strong>支援の見通し</strong>
-                <span>次に何をするか、支援が続く形になるかを見ます。</span>
-              </div>
+            <div class="three-grid">
+              <div class="mini-card"><strong>本人の安心</strong><span>子どもが学びや生活に向かいやすい状態かを見ます。</span></div>
+              <div class="mini-card"><strong>学校のつながり</strong><span>担任や校内だけでなく、外部とも考えられているかを見ます。</span></div>
+              <div class="mini-card"><strong>支援の見通し</strong><span>次に何をするか、支援が続く形になるかを見ます。</span></div>
             </div>
           </div>
         </div>
       </section>
 
-      <section id="howtoScreen" class="screen" aria-labelledby="howtoHeading">
+      <section id="howto" class="screen">
         <div class="panel hero">
-          <div class="panel-body screen-grid">
+          <div class="panel-body">
             <div>
               <p class="eyebrow">遊び方</p>
-              <h2 id="howtoHeading">どれも一理ある選択肢から、いま重視したい見方を選びます。</h2>
+              <h2>どれも一理ある選択肢から、いま重視したい見方を選びます。</h2>
             </div>
             <div class="case-box">
               <p>各ラウンドでは、ケース文を読んで4つの選択肢から1つを選びます。選んだあと、本人の安心・学校のつながり・支援の見通しが少し変わります。</p>
               <p class="question">ゲージは勝ち負けではなく、見方によって見えやすくなるものと置き去りになりやすいものを確かめるための補助です。</p>
             </div>
-            <div class="intro-grid">
-              <div class="mini-card">
-                <strong>いいですね！</strong>
-                <span>このケースで中心に置きたい視点とよく重なっています。</span>
-              </div>
-              <div class="mini-card">
-                <strong>おしい！</strong>
-                <span>大切な視点があります。もう一つ足すと見え方が広がります。</span>
-              </div>
-              <div class="mini-card">
-                <strong>注目してみよう！</strong>
-                <span>その見方で見えにくくなるものを一緒に考えてみます。</span>
-              </div>
+            <div class="three-grid">
+              <div class="mini-card"><strong>いいですね！</strong><span>このケースで中心に置きたい視点とよく重なっています。</span></div>
+              <div class="mini-card"><strong>おしい！</strong><span>大切な視点があります。もう一つ足すと見え方が広がります。</span></div>
+              <div class="mini-card"><strong>注目してみよう！</strong><span>その見方で見えにくくなるものを一緒に考えてみます。</span></div>
             </div>
           </div>
         </div>
       </section>
 
-      <section id="roundScreen" class="screen" aria-labelledby="roundHeading">
+      <section id="round" class="screen">
         <div class="panel">
-          <div class="panel-body screen-grid">
+          <div class="panel-body">
             <div>
               <p id="roundKicker" class="eyebrow">ラウンド 1</p>
-              <h2 id="roundHeading"></h2>
+              <h2 id="roundTitle"></h2>
             </div>
-            <div class="gauges" aria-label="状態ゲージ">
-              <div class="gauge">
-                <div class="gauge-head"><span>本人の安心</span><span id="gaugeSafetyValue">50</span></div>
-                <div class="gauge-track"><div id="gaugeSafety" class="gauge-fill"></div></div>
-              </div>
-              <div class="gauge">
-                <div class="gauge-head"><span>学校のつながり</span><span id="gaugeConnectionValue">50</span></div>
-                <div class="gauge-track"><div id="gaugeConnection" class="gauge-fill"></div></div>
-              </div>
-              <div class="gauge">
-                <div class="gauge-head"><span>支援の見通し</span><span id="gaugeOutlookValue">50</span></div>
-                <div class="gauge-track"><div id="gaugeOutlook" class="gauge-fill"></div></div>
-              </div>
-            </div>
+            <div id="roundGauges" class="gauges"></div>
             <div class="case-box">
-              <p class="case-title">ケース</p>
+              <p class="eyebrow">ケース</p>
               <p id="caseText"></p>
               <p id="questionText" class="question"></p>
             </div>
-            <div id="choices" class="choices" aria-label="選択肢"></div>
+            <div id="choiceList" class="choices" aria-label="選択肢"></div>
           </div>
         </div>
       </section>
 
-      <section id="feedbackScreen" class="screen" aria-labelledby="feedbackHeading">
+      <section id="feedback" class="screen">
         <div class="panel">
-          <div class="panel-body screen-grid">
+          <div class="panel-body">
             <div>
               <p id="feedbackKicker" class="eyebrow">フィードバック 1</p>
-              <h2 id="feedbackHeading">その見方から、何が見えやすくなる？</h2>
+              <h2>その見方から、何が見えやすくなる？</h2>
             </div>
-            <div class="gauges" aria-label="更新後の状態ゲージ">
-              <div class="gauge">
-                <div class="gauge-head"><span>本人の安心</span><span id="fbGaugeSafetyValue">50</span></div>
-                <div class="gauge-track"><div id="fbGaugeSafety" class="gauge-fill"></div></div>
-              </div>
-              <div class="gauge">
-                <div class="gauge-head"><span>学校のつながり</span><span id="fbGaugeConnectionValue">50</span></div>
-                <div class="gauge-track"><div id="fbGaugeConnection" class="gauge-fill"></div></div>
-              </div>
-              <div class="gauge">
-                <div class="gauge-head"><span>支援の見通し</span><span id="fbGaugeOutlookValue">50</span></div>
-                <div class="gauge-track"><div id="fbGaugeOutlook" class="gauge-fill"></div></div>
-              </div>
-            </div>
-            <div class="feedback-card">
-              <span id="feedbackBadge" class="feedback-badge"></span>
-              <p id="selectedLine" class="selected-line"></p>
+            <div id="feedbackGauges" class="gauges"></div>
+            <div class="feedback-box">
+              <span id="feedbackBadge" class="badge"></span>
+              <p id="selectedLine" class="muted"></p>
               <p id="feedbackComment"></p>
-              <div id="deltaRow" class="delta-row" aria-label="状態の変化"></div>
+              <div id="deltaRow" class="delta-row"></div>
             </div>
           </div>
         </div>
       </section>
 
-      <section id="resultScreen" class="screen" aria-labelledby="resultHeading">
+      <section id="result" class="screen">
         <div class="panel">
-          <div class="panel-body screen-grid">
+          <div class="panel-body">
             <div>
               <p class="eyebrow">結果・診断</p>
-              <h2 id="resultHeading">あなたの見方の動き</h2>
+              <h2>あなたの見方の動き</h2>
             </div>
-            <div class="result-layout">
-              <div class="score-box">
-                <p class="score-caption">合計スコア</p>
+            <div class="result-grid">
+              <div class="result-box">
+                <p class="muted">合計スコア</p>
                 <p id="finalScore" class="score-number">0 / 8</p>
-                <p id="scoreMessage" class="score-caption"></p>
+                <p id="scoreMessage" class="muted"></p>
               </div>
-              <div class="type-box">
-                <p class="score-caption">思考タイプ診断</p>
+              <div class="result-box">
+                <p class="muted">思考タイプ診断</p>
                 <p id="typeName" class="type-name"></p>
                 <p id="typeDescription"></p>
               </div>
             </div>
-            <div class="summary-box">
+            <div class="result-box">
               <h3>学びのまとめ</h3>
               <p>特別支援学校は、在籍する子どもの学びの場であると同時に、地域の特別支援教育を支える拠点でもあります。センター的機能には、教員支援、相談、関係機関連携などが含まれます。</p>
               <p>インクルーシブ教育は「同じ場にいるか」だけでなく、参加・保障・交流を含めて考えたいテーマです。自立も、すべてを一人で行うことだけではなく、必要な支援を受けながら参加していく力として捉えられます。</p>
             </div>
-            <div class="summary-box">
+            <div class="result-box">
               <h3>次に考えたい問い</h3>
               <p id="nextQuestion"></p>
             </div>
@@ -783,28 +625,25 @@
         </div>
       </section>
 
-      <section id="reflectionScreen" class="screen" aria-labelledby="reflectionHeading">
+      <section id="reflection" class="screen">
         <div class="panel">
-          <div class="panel-body screen-grid">
+          <div class="panel-body">
             <div>
               <p class="eyebrow">振り返り</p>
-              <h2 id="reflectionHeading">まだ納得できないことは？</h2>
+              <h2>まだ納得できないことは？</h2>
             </div>
             <div class="case-box">
               <p>最後に、いまの言葉で短く残してみてください。きれいにまとめなくても大丈夫です。</p>
             </div>
             <div class="reflection-fields">
-              <label>
-                このゲームで少し見方が変わったこと
-                <textarea id="reflectionChanged" placeholder="例：特別支援学校を、通う場所だけでなく地域の支援拠点としても見られるかもしれない。"></textarea>
+              <label>このゲームで少し見方が変わったこと
+                <textarea placeholder="例：特別支援学校を、通う場所だけでなく地域の支援拠点としても見られるかもしれない。"></textarea>
               </label>
-              <label>
-                まだ納得できないこと
-                <textarea id="reflectionUnclear" placeholder="例：同じ場で学ぶことと、本人に合った場を選ぶことは、どう両立できるのだろう。"></textarea>
+              <label>まだ納得できないこと
+                <textarea placeholder="例：同じ場で学ぶことと、本人に合った場を選ぶことは、どう両立できるのだろう。"></textarea>
               </label>
-              <label>
-                もう少し知りたいこと
-                <textarea id="reflectionWant" placeholder="例：センター的機能が実際の学校現場でどう運用されているのか。"></textarea>
+              <label>もう少し知りたいこと
+                <textarea placeholder="例：センター的機能が実際の学校現場でどう運用されているのか。"></textarea>
               </label>
             </div>
           </div>
@@ -812,9 +651,9 @@
       </section>
     </main>
 
-    <footer class="bottom-actions" aria-label="操作">
-      <button id="backBtn" class="secondary-btn" type="button">戻る</button>
-      <button id="mainBtn" class="primary-btn" type="button">はじめる</button>
+    <footer>
+      <button id="backButton" class="secondary" type="button">戻る</button>
+      <button id="nextButton" class="primary" type="button">はじめる</button>
     </footer>
   </div>
 
@@ -825,551 +664,308 @@
         case: "ある小学校で、授業中に離席が増え、友だちとのトラブルも起きやすい子どもについて、担任が関わり方に悩んでいる。校内でも話し合っているが整理しきれず、特別支援学校に相談しようかという話が出ている。ただ、学校では「特別支援学校の先生も忙しいのでは」「本当に地域の相談まで対応できるのか」という声もある。",
         question: "この場面で、まず大切にしたい見方はどれ？",
         options: [
-          {
-            key: "A",
-            text: "制度として位置づけられているのだから、特別支援学校は当然十分に対応できるはずだ",
-            score: 1,
-            level: "near",
-            label: "おしい！",
-            comment: "制度上の役割に注目できている。ただし「制度にある=十分に機能している」とは限らない。現場の忙しさや地域差も一緒に考えたい。",
-            delta: { safety: 0, connection: 1, outlook: 0 },
-            tags: ["balancer", "realist"]
-          },
-          {
-            key: "B",
-            text: "特別支援学校に任せるかどうかより、校内で抱え込まず外部とつながる発想を持つことが大切だ",
-            score: 2,
-            level: "match",
-            label: "いいですね！",
-            comment: "特別支援学校のセンター的機能は、何でも任せることではなく、学校だけで抱え込まないためのつながりをつくる視点が大切。相談すること自体が支援のスタートになる。",
-            delta: { safety: 1, connection: 2, outlook: 2 },
-            tags: ["facilitator", "realist"]
-          },
-          {
-            key: "C",
-            text: "忙しいはずなので、相談はせず担任だけで工夫したほうが早い",
-            score: 1,
-            level: "near",
-            label: "おしい！",
-            comment: "校内で工夫する視点は大切。ただし、担任だけで抱えると見えなくなることもある。校内と外部をどうつなぐかまで考えられると一歩深まる。",
-            delta: { safety: 0, connection: -1, outlook: 0 },
-            tags: ["realist"]
-          },
-          {
-            key: "D",
-            text: "地域支援は理想論なので、センター的機能はあまり考えなくてよい",
-            score: 0,
-            level: "gap",
-            label: "注目してみよう！",
-            comment: "現実には負担があるとしても、だからこそセンター的機能の必要性や限界を考える価値がある。「理想論」で閉じずに見てみたい。",
-            delta: { safety: -1, connection: -1, outlook: -1 },
-            tags: ["reflector"]
-          }
+          { key: "A", text: "制度として位置づけられているのだから、特別支援学校は当然十分に対応できるはずだ", score: 1, level: "near", label: "おしい！", comment: "制度上の役割に注目できている。ただし「制度にある=十分に機能している」とは限らない。現場の忙しさや地域差も一緒に考えたい。", delta: { safety: 0, connection: 1, outlook: 0 }, tags: ["balancer", "realist"] },
+          { key: "B", text: "特別支援学校に任せるかどうかより、校内で抱え込まず外部とつながる発想を持つことが大切だ", score: 2, level: "match", label: "いいですね！", comment: "特別支援学校のセンター的機能は、何でも任せることではなく、学校だけで抱え込まないためのつながりをつくる視点が大切。相談すること自体が支援のスタートになる。", delta: { safety: 1, connection: 2, outlook: 2 }, tags: ["facilitator", "realist"] },
+          { key: "C", text: "忙しいはずなので、相談はせず担任だけで工夫したほうが早い", score: 1, level: "near", label: "おしい！", comment: "校内で工夫する視点は大切。ただし、担任だけで抱えると見えなくなることもある。校内と外部をどうつなぐかまで考えられると一歩深まる。", delta: { safety: 0, connection: -1, outlook: 0 }, tags: ["realist"] },
+          { key: "D", text: "地域支援は理想論なので、センター的機能はあまり考えなくてよい", score: 0, level: "gap", label: "注目してみよう！", comment: "現実には負担があるとしても、だからこそセンター的機能の必要性や限界を考える価値がある。「理想論」で閉じずに見てみたい。", delta: { safety: -1, connection: -1, outlook: -1 }, tags: ["reflector"] }
         ]
       },
       {
-        title: "インクルーシブ教育と特別支援学校",
-        case: "授業で「インクルーシブ教育とは、できるだけ同じ場で学ぶことだ」という説明を聞いた学生たちの間で、「それなら特別支援学校はインクルーシブ教育に反するのでは？」という疑問が出た。一方で、「一人ひとりに合った学びの場を保障することも大切では」という意見もある。",
-        question: "この疑問に向き合うとき、いちばん大切にしたい視点はどれ？",
+        title: "交流の場をどうつくるか",
+        case: "地域の小学校で、特別支援学校との交流活動を計画している。担当の教員からは、「交流は大事だと思うが、当日だけ会って終わる形にならないか」「ただ同じ場にいるだけで、本当に一緒に学んだことになるのか」という声が出ている。一方で、「まずは会う機会があること自体に意味がある」という意見もある。",
+        question: "この場面で、まず大切にしたい見方はどれ？",
         options: [
-          {
-            key: "A",
-            text: "同じ場で学べないなら、インクルーシブ教育とは言えない",
-            score: 1,
-            level: "near",
-            label: "おしい！",
-            comment: "同じ場で学ぶことの価値に注目できている。ただ、それだけを中心にすると、本人に合った支援や学びの保障が見えにくくなることがある。",
-            delta: { safety: 0, connection: 0, outlook: 1 },
-            tags: ["balancer"]
-          },
-          {
-            key: "B",
-            text: "場が分かれていても、本人に合っていればそれで十分で、交流は特に重視しなくてよい",
-            score: 1,
-            level: "near",
-            label: "おしい！",
-            comment: "本人に合う場を大切にしている点は重要。ただし、交流や共同学習の視点が抜けると、学びの関係性が狭く見えてしまうことがある。",
-            delta: { safety: 1, connection: -1, outlook: 0 },
-            tags: ["person"]
-          },
-          {
-            key: "C",
-            text: "「同じ場」だけでなく、参加・保障・交流を含めて考える必要がある",
-            score: 2,
-            level: "match",
-            label: "いいですね！",
-            comment: "インクルーシブ教育は「同じ場かどうか」だけで決めきれない。参加できること、必要な支援があること、交流がどう保障されるかまで含めて考えたい。",
-            delta: { safety: 2, connection: 2, outlook: 2 },
-            tags: ["balancer", "facilitator", "person"]
-          },
-          {
-            key: "D",
-            text: "特別支援学校は専門性があるのだから、インクルーシブ教育との関係は考えなくてよい",
-            score: 0,
-            level: "gap",
-            label: "注目してみよう！",
-            comment: "専門性は大切だが、その専門性がどのように地域や交流につながるのかを考えることが、このテーマでは重要になる。",
-            delta: { safety: 0, connection: -1, outlook: -1 },
-            tags: ["reflector"]
-          }
+          { key: "A", text: "とにかく同じ場に集まれれば、それだけで交流として十分である", score: 1, level: "near", label: "おしい！", comment: "同じ場をつくることの大切さに注目できている。ただし、そこに「参加できたか」「関われたか」が伴わないと、交流が形だけで終わることもある。", delta: { safety: 0, connection: 1, outlook: 0 }, tags: ["balancer"] },
+          { key: "B", text: "交流は大切だが、本人たちが参加しやすい形や役割まで考えて設計することが必要だ", score: 2, level: "match", label: "いいですね！", comment: "交流は、会うこと自体だけでなく、参加しやすさや役割、関わり方まで考えてこそ学びになりやすい。インクルーシブ教育を現場で考える視点にもつながる。", delta: { safety: 2, connection: 2, outlook: 2 }, tags: ["balancer", "facilitator", "person"] },
+          { key: "C", text: "交流は負担が大きいので、特別支援学校と通常の学校は分けたままでよい", score: 0, level: "gap", label: "注目してみよう！", comment: "負担への目配りは大切だが、そこで止まると、どうすれば無理のない交流ができるかという発想が生まれにくい。", delta: { safety: -1, connection: -1, outlook: -1 }, tags: ["reflector", "realist"] },
+          { key: "D", text: "交流のねらいは曖昧になりやすいので、行事として1回実施すれば十分である", score: 1, level: "near", label: "おしい！", comment: "行事として始める視点は分かりやすい。ただし、1回の実施だけでは「一緒に学ぶ」実感につながりにくいこともある。ねらいと方法を考えたい。", delta: { safety: 0, connection: 0, outlook: 1 }, tags: ["realist"] }
         ]
       },
       {
-        title: "『障害のある子どもが学ぶ学校』で足りる？",
-        case: "初学者向け説明として、「特別支援学校は障害のある子どもが学ぶ学校です」とまとめられていた。学生からは、「その説明だと、通常の学級、通級による指導、特別支援学級との関係が見えない」「本人や保護者の意向が抜けている」「地域を支える役割もあるのでは」という声が出た。",
-        question: "この説明を見直すなら、どの方向がいちばん大切？",
+        title: "どこに相談する？どうつなぐ？",
+        case: "幼稚園で、集団活動に入りにくく、急な予定変更で不安が強くなる子どもについて、担任が対応に悩んでいる。園内でも話しているが、「まず園で工夫すべき」「保護者にどう伝えるか難しい」「特別支援学校や関係機関にも相談した方がよいのでは」という意見が出ている。まだ診断の有無ははっきりしていない。",
+        question: "この場面で、最初に大切にしたい動きはどれ？",
         options: [
-          {
-            key: "A",
-            text: "初学者向けなら簡単であることが大切なので、このままでよい",
-            score: 1,
-            level: "near",
-            label: "おしい！",
-            comment: "シンプルさを大切にする姿勢は理解できる。ただし、シンプルにしすぎると、就学先の多様さや地域支援という重要な側面が見えにくくなる。",
-            delta: { safety: 0, connection: 0, outlook: 1 },
-            tags: ["realist"]
-          },
-          {
-            key: "B",
-            text: "在籍する子どもへの教育に加えて、地域支援の役割まで見える説明にしたい",
-            score: 2,
-            level: "match",
-            label: "いいですね！",
-            comment: "特別支援学校は「通う学校」としての面と「地域を支える拠点」としての面の両方から捉えると、説明がぐっと立体的になる。",
-            delta: { safety: 1, connection: 2, outlook: 2 },
-            tags: ["facilitator", "balancer"]
-          },
-          {
-            key: "C",
-            text: "通うのは障害のある子どもなのだから、細かい説明はなくても大きな問題はない",
-            score: 0,
-            level: "gap",
-            label: "注目してみよう！",
-            comment: "この見方では、本人・保護者の意向や、通常の学級・通級・特別支援学級との関係が見えにくくなる。",
-            delta: { safety: -1, connection: -1, outlook: -1 },
-            tags: ["reflector"]
-          },
-          {
-            key: "D",
-            text: "まず障害の種類をもっと細かく列挙すれば十分である",
-            score: 1,
-            level: "near",
-            label: "おしい！",
-            comment: "説明を具体化しようとする視点はよい。ただ、分類を細かくするだけでは、役割の広がりや就学の考え方までは見えにくい。",
-            delta: { safety: 0, connection: 0, outlook: 1 },
-            tags: ["balancer"]
-          }
+          { key: "A", text: "診断がつくまでは外部に相談せず、園だけで様子を見る", score: 1, level: "near", label: "おしい！", comment: "園内でまず考える姿勢は大切。ただし、診断の有無だけを待つと、支援につながるタイミングを逃すこともある。必要なら外部とつながれる準備も考えたい。", delta: { safety: 0, connection: 0, outlook: 1 }, tags: ["realist"] },
+          { key: "B", text: "まず園内で見立てを共有しつつ、必要に応じて保護者や外部ともつながれる形を考える", score: 2, level: "match", label: "いいですね！", comment: "園内での共有、保護者との対話、必要に応じた外部相談を切り分けずにつなぐ視点が大切。センター的機能を活用する入口としても自然な考え方である。", delta: { safety: 2, connection: 2, outlook: 2 }, tags: ["facilitator", "person", "realist"] },
+          { key: "C", text: "すぐに特別支援学校へ任せればよく、園内で整理する必要はあまりない", score: 1, level: "near", label: "おしい！", comment: "外部につながる発想は重要。ただし、園内で何に困っていて、何を試してきたかが整理されていないと、相談しても支援がかみ合いにくいことがある。", delta: { safety: 0, connection: 1, outlook: 0 }, tags: ["facilitator"] },
+          { key: "D", text: "保護者が不安になるといけないので、困り感にはあまり触れないほうがよい", score: 0, level: "gap", label: "注目してみよう！", comment: "保護者への配慮は必要だが、困り感に触れないままだと、子どもに合った支援や連携につながりにくくなることがある。", delta: { safety: -1, connection: -1, outlook: -1 }, tags: ["reflector"] }
         ]
       },
       {
-        title: "自立とは何か",
-        case: "特別支援学校の説明で、「学習上・生活上の困難を改善・克服し、自立を図る」と書かれていた。これに対して学生から、「困難をなくすことが目的のように聞こえる」「自立は、一人でできることを増やすことだけではないのでは」「助けを求めたり支援を使ったりする力も自立では」という声が出た。",
-        question: "この場面で考えたい『自立』の捉え方として、最も授業に合うものはどれ？",
+        title: "自立活動をどう捉えるか",
+        case: "特別支援学校の授業見学に行った学生が、「国語や算数よりも、自立活動や生活に関わる学習が多く見えた」と話している。それに対して、「教科の勉強が少なくて大丈夫なのか」「でも、その子が生活しやすくなる学びのほうが大事なのでは」という意見が出た。担当教員は、「何を優先するかは一人ひとり違う」と説明している。",
+        question: "この場面で、いちばん大切にしたい見方はどれ？",
         options: [
-          {
-            key: "A",
-            text: "できるだけ一人でできることを増やすことが、自立の中心である",
-            score: 1,
-            level: "near",
-            label: "おしい！",
-            comment: "一人でできることに注目する見方は分かりやすい。ただ、それだけだと、支援を使う力や参加し続ける力が見えにくくなる。",
-            delta: { safety: 0, connection: 0, outlook: 1 },
-            tags: ["realist"]
-          },
-          {
-            key: "B",
-            text: "困難を完全に克服できなくても、支援を使いながら参加していくことも自立である",
-            score: 2,
-            level: "match",
-            label: "いいですね！",
-            comment: "自立は「全部一人でできること」ではなく、必要な支援を使いながら生活や学びに参加できることとして捉えると、見方が広がる。",
-            delta: { safety: 2, connection: 1, outlook: 2 },
-            tags: ["creator", "person"]
-          },
-          {
-            key: "C",
-            text: "自立は抽象的なので、授業では深く扱わなくてよい",
-            score: 0,
-            level: "gap",
-            label: "注目してみよう！",
-            comment: "自立の意味づけは、この授業テーマの中心の一つ。曖昧だからこそ、どう捉えるかを考える価値がある。",
-            delta: { safety: -1, connection: 0, outlook: -1 },
-            tags: ["reflector"]
-          },
-          {
-            key: "D",
-            text: "とにかく生活面の力だけを育てれば、自立といえる",
-            score: 1,
-            level: "near",
-            label: "おしい！",
-            comment: "生活面への注目は大切。ただし、自立は生活だけでなく、学習、参加、関係、支援の使い方まで含めて考えられる。",
-            delta: { safety: 0, connection: -1, outlook: 0 },
-            tags: ["realist"]
-          }
+          { key: "A", text: "学校なのだから、どの子にもまず教科の学習を最優先にすべきである", score: 1, level: "near", label: "おしい！", comment: "教科学習を大切に考える視点は重要。ただし、その子が学習に向かうための身体・気持ち・コミュニケーションの土台が整っていないと、教科の学びも進みにくいことがある。", delta: { safety: 0, connection: 0, outlook: 1 }, tags: ["balancer"] },
+          { key: "B", text: "自立活動は、教科より下ではなく、その子が学びや生活に参加するための土台として考えたい", score: 2, level: "match", label: "いいですね！", comment: "自立活動は「教科の代わり」ではなく、その子が生活や学習に参加していくための土台を育てる学びとして捉えると見え方が広がる。", delta: { safety: 2, connection: 1, outlook: 2 }, tags: ["creator", "person"] },
+          { key: "C", text: "自立活動は大事だが、生活面だけできれば学習はあまり重視しなくてよい", score: 1, level: "near", label: "おしい！", comment: "生活面への注目は大切。ただし、生活だけ、学習だけと分けるのではなく、その子にとって何が参加の土台になるかを考えたい。", delta: { safety: 0, connection: -1, outlook: 0 }, tags: ["realist"] },
+          { key: "D", text: "何をするかは先生の経験で決めればよく、特に整理しなくてよい", score: 0, level: "gap", label: "注目してみよう！", comment: "教員の経験は大切だが、それだけで決めると、学びのねらいや子どもにとっての意味が見えにくくなることがある。", delta: { safety: -1, connection: 0, outlook: -1 }, tags: ["reflector"] }
         ]
       }
     ];
 
-    const typeProfiles = {
-      facilitator: {
-        name: "つながり設計ファシリテータータイプ",
-        description: "学校・保護者・関係機関のつながりに目が向きやすいタイプです。一つの場所や一人の先生に閉じず、支援が続く形を考えようとしています。",
-        question: "センター的機能は、現場でどこまで実現できているのだろう？"
-      },
-      person: {
-        name: "本人視点ていねい観察タイプ",
-        description: "本人の安心や学びやすさを起点に考えるのが得意なタイプです。その視点に、学校全体や地域とのつながりを重ねると、さらに見通しが広がります。",
-        question: "本人に合った学びの場を、誰がどう決めるのだろう？"
-      },
-      realist: {
-        name: "現場リアリストタイプ",
-        description: "理想だけでなく、人員や時間、運用可能性に目が向くタイプです。現場の制約を見ながら、そこで何をつなげられるかを考える力があります。",
-        question: "センター的機能は、現場でどこまで実現できているのだろう？"
-      },
-      balancer: {
-        name: "学びの場バランサータイプ",
-        description: "通常の学級、特別支援学級、通級、特別支援学校の関係をバランスよく考えやすいタイプです。場の違いだけでなく、参加や交流の質にも目を向けられそうです。",
-        question: "特別支援学校と通常の学校の交流は、どう設計すればよいのだろう？"
-      },
-      creator: {
-        name: "自立支援クリエイタータイプ",
-        description: "「一人でできる」だけではなく、支援を使いながら参加する力として自立を考えられるタイプです。困難をなくすことより、参加し続ける条件に目が向いています。",
-        question: "「支援を使えること」は、なぜ自立につながるのだろう？"
-      },
-      reflector: {
-        name: "問いを残せるリフレクタータイプ",
-        description: "一つに決めきらず、違和感を持ち続けながら考えられるタイプです。迷いは弱さではなく、制度説明と現場の現実をつなぎ直す入口になります。",
-        question: "本人に合った学びの場を、誰がどう決めるのだろう？"
-      }
+    const types = {
+      facilitator: { name: "つながり設計ファシリテータータイプ", description: "学校・保護者・関係機関のつながりに目が向きやすいタイプです。一つの場所や一人の先生に閉じず、支援が続く形を考えようとしています。", question: "センター的機能は、現場でどこまで実現できているのだろう？" },
+      person: { name: "本人視点ていねい観察タイプ", description: "本人の安心や学びやすさを起点に考えるのが得意なタイプです。その視点に、学校全体や地域とのつながりを重ねると、さらに見通しが広がります。", question: "本人に合った学びの場を、誰がどう決めるのだろう？" },
+      realist: { name: "現場リアリストタイプ", description: "理想だけでなく、人員や時間、運用可能性に目が向くタイプです。現場の制約を見ながら、そこで何をつなげられるかを考える力があります。", question: "センター的機能は、現場でどこまで実現できているのだろう？" },
+      balancer: { name: "学びの場バランサータイプ", description: "通常の学級、特別支援学級、通級、特別支援学校の関係をバランスよく考えやすいタイプです。場の違いだけでなく、参加や交流の質にも目を向けられそうです。", question: "特別支援学校と通常の学校の交流は、どう設計すればよいのだろう？" },
+      creator: { name: "自立支援クリエイタータイプ", description: "「一人でできる」だけではなく、支援を使いながら参加する力として自立を考えられるタイプです。困難をなくすことより、参加し続ける条件に目が向いています。", question: "「支援を使えること」は、なぜ自立につながるのだろう？" },
+      reflector: { name: "問いを残せるリフレクタータイプ", description: "一つに決めきらず、違和感を持ち続けながら考えられるタイプです。迷いは弱さではなく、制度説明と現場の現実をつなぎ直す入口になります。", question: "本人に合った学びの場を、誰がどう決めるのだろう？" }
     };
 
+    const stepOrder = ["title", "howto", "round", "feedback", "result", "reflection"];
     const state = {
-      screen: "title",
-      roundIndex: 0,
-      selectedIndex: null,
+      step: "title",
+      round: 0,
+      selected: null,
       score: 0,
-      gauges: {
-        safety: 50,
-        connection: 50,
-        outlook: 50
-      },
-      choices: [],
-      tagCounts: {
-        facilitator: 0,
-        person: 0,
-        realist: 0,
-        balancer: 0,
-        creator: 0,
-        reflector: 0
-      }
+      gauges: { safety: 50, connection: 50, outlook: 50 },
+      answers: [],
+      tags: { facilitator: 0, person: 0, realist: 0, balancer: 0, creator: 0, reflector: 0 },
+      lastApplied: null
     };
 
-    const screens = {
-      title: document.getElementById("titleScreen"),
-      howto: document.getElementById("howtoScreen"),
-      round: document.getElementById("roundScreen"),
-      feedback: document.getElementById("feedbackScreen"),
-      result: document.getElementById("resultScreen"),
-      reflection: document.getElementById("reflectionScreen")
-    };
-
-    const mainBtn = document.getElementById("mainBtn");
-    const backBtn = document.getElementById("backBtn");
-    const scoreNow = document.getElementById("scoreNow");
-    const progressArea = document.getElementById("progressArea");
-    const progressText = document.getElementById("progressText");
-    const progressFill = document.getElementById("progressFill");
-    const progressTrack = document.querySelector(".progress-track");
+    const $ = (id) => document.getElementById(id);
+    const nextButton = $("nextButton");
+    const backButton = $("backButton");
+    const gaugeNames = { safety: "本人の安心", connection: "学校のつながり", outlook: "支援の見通し" };
 
     function clamp(value, min, max) {
       return Math.max(min, Math.min(max, value));
     }
 
-    function showScreen(name) {
-      Object.values(screens).forEach((screen) => screen.classList.remove("is-active"));
-      screens[name].classList.add("is-active");
-      state.screen = name;
-      updateChrome();
+    function setStep(step) {
+      state.step = step;
+      stepOrder.forEach((id) => $(id).classList.toggle("active", id === step));
+      updateHeaderAndButtons();
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
 
-    function updateChrome() {
-      scoreNow.textContent = state.score;
-      const progressVisible = ["round", "feedback", "result", "reflection"].includes(state.screen);
-      progressArea.classList.toggle("is-visible", progressVisible);
+    function updateHeaderAndButtons() {
+      $("scoreNow").textContent = state.score;
+      const showProgress = !["title", "howto"].includes(state.step);
+      $("progressWrap").classList.toggle("visible", showProgress);
 
-      let progressValue = state.roundIndex;
-      if (state.screen === "feedback") progressValue = state.roundIndex + 1;
-      if (state.screen === "result" || state.screen === "reflection") progressValue = 4;
-      if (state.screen === "round") progressValue = state.roundIndex;
+      const progressValue = state.step === "round" ? state.round : state.step === "feedback" ? state.round + 1 : ["result", "reflection"].includes(state.step) ? 4 : 0;
+      $("progressText").textContent = ["result", "reflection"].includes(state.step) ? "4ラウンド完了" : `ラウンド ${Math.min(state.round + 1, 4)} / 4`;
+      $("progressFill").style.width = `${(progressValue / 4) * 100}%`;
+      document.querySelector(".progress-track").setAttribute("aria-valuenow", String(progressValue));
 
-      progressText.textContent = state.screen === "result" || state.screen === "reflection"
-        ? "4ラウンド完了"
-        : `ラウンド ${Math.min(state.roundIndex + 1, 4)} / 4`;
-      progressFill.style.width = `${(progressValue / 4) * 100}%`;
-      progressTrack.setAttribute("aria-valuenow", String(progressValue));
+      backButton.style.display = state.step === "title" ? "none" : "inline-flex";
+      nextButton.disabled = state.step === "round" && state.selected === null;
 
-      backBtn.style.display = state.screen === "title" ? "none" : "inline-flex";
-
-      if (state.screen === "title") {
-        mainBtn.textContent = "はじめる";
-        mainBtn.disabled = false;
-      } else if (state.screen === "howto") {
-        mainBtn.textContent = "ラウンド1へ";
-        mainBtn.disabled = false;
-      } else if (state.screen === "round") {
-        mainBtn.textContent = "この見方で進む";
-        mainBtn.disabled = state.selectedIndex === null;
-      } else if (state.screen === "feedback") {
-        mainBtn.textContent = state.roundIndex < rounds.length - 1 ? "次のラウンドへ" : "結果を見る";
-        mainBtn.disabled = false;
-      } else if (state.screen === "result") {
-        mainBtn.textContent = "振り返りを書く";
-        mainBtn.disabled = false;
-      } else if (state.screen === "reflection") {
-        mainBtn.textContent = "もう一度あそぶ";
-        mainBtn.disabled = false;
-      }
+      const labels = {
+        title: "はじめる",
+        howto: "ラウンド1へ",
+        round: "この見方で進む",
+        feedback: state.round < rounds.length - 1 ? "次のラウンドへ" : "結果を見る",
+        result: "振り返りを書く",
+        reflection: "もう一度あそぶ"
+      };
+      nextButton.textContent = labels[state.step];
     }
 
-    function updateGaugeElements(prefix = "") {
-      const map = [
-        ["Safety", "safety"],
-        ["Connection", "connection"],
-        ["Outlook", "outlook"]
-      ];
-
-      map.forEach(([elementName, key]) => {
-        const fill = document.getElementById(`${prefix}Gauge${elementName}`);
-        const value = document.getElementById(`${prefix}Gauge${elementName}Value`);
-        fill.style.width = `${state.gauges[key]}%`;
-        value.textContent = state.gauges[key];
+    function renderGauges(targetId) {
+      const target = $(targetId);
+      target.innerHTML = "";
+      Object.entries(gaugeNames).forEach(([key, label]) => {
+        const gauge = document.createElement("div");
+        gauge.className = "gauge";
+        gauge.innerHTML = `
+          <div class="gauge-top"><span>${label}</span><span>${state.gauges[key]}</span></div>
+          <div class="bar" aria-label="${label} ${state.gauges[key]}"><span style="width:${state.gauges[key]}%"></span></div>
+        `;
+        target.appendChild(gauge);
       });
     }
 
     function renderRound() {
-      const round = rounds[state.roundIndex];
-      state.selectedIndex = null;
-      document.getElementById("roundKicker").textContent = `ラウンド ${state.roundIndex + 1}`;
-      document.getElementById("roundHeading").textContent = round.title;
-      document.getElementById("caseText").textContent = round.case;
-      document.getElementById("questionText").textContent = round.question;
-      updateGaugeElements("");
+      const round = rounds[state.round];
+      state.selected = null;
+      state.lastApplied = null;
+      $("roundKicker").textContent = `ラウンド ${state.round + 1}`;
+      $("roundTitle").textContent = round.title;
+      $("caseText").textContent = round.case;
+      $("questionText").textContent = round.question;
+      renderGauges("roundGauges");
 
-      const choicesEl = document.getElementById("choices");
-      choicesEl.innerHTML = "";
-
+      const list = $("choiceList");
+      list.innerHTML = "";
       round.options.forEach((option, index) => {
         const button = document.createElement("button");
         button.type = "button";
-        button.className = "choice-card";
+        button.className = "choice";
         button.setAttribute("aria-pressed", "false");
-        button.innerHTML = `
-          <span class="choice-letter" aria-hidden="true">${option.key}</span>
-          <span class="choice-text">${option.text}</span>
-        `;
-        button.addEventListener("click", () => selectChoice(index));
-        choicesEl.appendChild(button);
+        button.innerHTML = `<span class="letter" aria-hidden="true">${option.key}</span><span class="choice-text">${option.text}</span>`;
+        button.addEventListener("click", () => {
+          state.selected = index;
+          document.querySelectorAll(".choice").forEach((choice, choiceIndex) => {
+            const selected = choiceIndex === index;
+            choice.classList.toggle("selected", selected);
+            choice.setAttribute("aria-pressed", String(selected));
+          });
+          updateHeaderAndButtons();
+        });
+        list.appendChild(button);
       });
-
-      updateChrome();
+      updateHeaderAndButtons();
     }
 
-    function selectChoice(index) {
-      state.selectedIndex = index;
-      document.querySelectorAll(".choice-card").forEach((card, cardIndex) => {
-        const selected = cardIndex === index;
-        card.classList.toggle("is-selected", selected);
-        card.setAttribute("aria-pressed", String(selected));
-      });
-      updateChrome();
-    }
-
-    function applyChoice() {
-      const round = rounds[state.roundIndex];
-      const option = round.options[state.selectedIndex];
+    function applySelectedChoice() {
+      if (state.selected === null) return;
+      const option = rounds[state.round].options[state.selected];
 
       state.score += option.score;
-      state.choices.push({
-        roundIndex: state.roundIndex,
-        optionKey: option.key,
-        score: option.score,
-        level: option.level,
-        tags: option.tags
+      Object.keys(option.delta).forEach((key) => {
+        state.gauges[key] = clamp(state.gauges[key] + option.delta[key] * 9, 0, 100);
       });
+      option.tags.forEach((tag) => state.tags[tag] += 1);
 
-      option.tags.forEach((tag) => {
-        state.tagCounts[tag] += 1;
-      });
-
-      state.gauges.safety = clamp(state.gauges.safety + option.delta.safety * 9, 0, 100);
-      state.gauges.connection = clamp(state.gauges.connection + option.delta.connection * 9, 0, 100);
-      state.gauges.outlook = clamp(state.gauges.outlook + option.delta.outlook * 9, 0, 100);
-
+      state.lastApplied = { option, round: state.round };
+      state.answers.push({ round: state.round, key: option.key, score: option.score, tags: option.tags.slice() });
       renderFeedback(option);
-      showScreen("feedback");
+      setStep("feedback");
     }
 
-    function getToneClass(level) {
-      if (level === "match") return "tone-good";
-      if (level === "near") return "tone-warn";
-      return "tone-bad";
-    }
-
-    function getLevelText(level) {
-      if (level === "match") return "一致";
-      if (level === "near") return "近い";
-      return "ずれ";
+    function undoLastApplied() {
+      if (!state.lastApplied) return;
+      const option = state.lastApplied.option;
+      state.score -= option.score;
+      Object.keys(option.delta).forEach((key) => {
+        state.gauges[key] = clamp(state.gauges[key] - option.delta[key] * 9, 0, 100);
+      });
+      option.tags.forEach((tag) => state.tags[tag] -= 1);
+      state.answers.pop();
+      state.lastApplied = null;
     }
 
     function renderFeedback(option) {
-      document.getElementById("feedbackKicker").textContent = `フィードバック ${state.roundIndex + 1}`;
+      $("feedbackKicker").textContent = `フィードバック ${state.round + 1}`;
+      renderGauges("feedbackGauges");
+      const badge = $("feedbackBadge");
+      badge.className = `badge ${option.level === "match" ? "good" : option.level === "near" ? "warn" : "bad"}`;
+      badge.textContent = `${option.label} 一致度：${option.level === "match" ? "一致" : option.level === "near" ? "近い" : "ずれ"}`;
+      $("selectedLine").textContent = `選んだ見方：${option.key}. ${option.text}`;
+      $("feedbackComment").textContent = option.comment;
 
-      const badge = document.getElementById("feedbackBadge");
-      badge.className = `feedback-badge ${getToneClass(option.level)}`;
-      badge.textContent = `${option.label} 一致度：${getLevelText(option.level)}`;
-
-      document.getElementById("selectedLine").textContent = `選んだ見方：${option.key}. ${option.text}`;
-      document.getElementById("feedbackComment").textContent = option.comment;
-
-      const deltaRow = document.getElementById("deltaRow");
-      deltaRow.innerHTML = "";
-      [
-        ["本人の安心", option.delta.safety],
-        ["学校のつながり", option.delta.connection],
-        ["支援の見通し", option.delta.outlook]
-      ].forEach(([label, value]) => {
+      const row = $("deltaRow");
+      row.innerHTML = "";
+      Object.entries(option.delta).forEach(([key, value]) => {
         const chip = document.createElement("span");
-        chip.className = `delta-chip ${value < 0 ? "minus" : ""}`;
-        chip.textContent = `${label} ${value > 0 ? "+" : ""}${value}`;
-        deltaRow.appendChild(chip);
+        chip.className = `delta ${value < 0 ? "minus" : ""}`;
+        chip.textContent = `${gaugeNames[key]} ${value > 0 ? "+" : ""}${value}`;
+        row.appendChild(chip);
       });
-
-      requestAnimationFrame(() => updateGaugeElements("fb"));
     }
 
-    function renderResult() {
-      const finalScore = document.getElementById("finalScore");
-      const scoreMessage = document.getElementById("scoreMessage");
-      const type = diagnoseType();
-
-      finalScore.textContent = `${state.score} / 8`;
-      scoreMessage.textContent = getScoreMessage(state.score);
-      document.getElementById("typeName").textContent = type.name;
-      document.getElementById("typeDescription").textContent = type.description;
-      document.getElementById("nextQuestion").textContent = type.question;
-    }
-
-    function getScoreMessage(score) {
+    function scoreMessage(score) {
       if (score <= 2) return "まだこれから！";
       if (score <= 4) return "見方が広がってきた！";
       if (score <= 6) return "かなりつながりが見えてきた！";
       return "問いを深く考えられている！";
     }
 
-    function diagnoseType() {
-      const counts = { ...state.tagCounts };
-
-      if (state.score <= 3 && counts.reflector >= 2) {
-        return typeProfiles.reflector;
-      }
-
-      if (counts.creator >= 1 && state.choices.some((choice) => choice.roundIndex === 3 && choice.optionKey === "B")) {
-        return typeProfiles.creator;
-      }
+    function diagnose() {
+      if (state.score <= 3 && state.tags.reflector >= 2) return types.reflector;
+      if (state.answers.some((answer) => answer.round === 3 && answer.key === "B")) return types.creator;
 
       const priority = ["facilitator", "person", "realist", "balancer", "creator", "reflector"];
-      let bestKey = priority[0];
-
+      let best = priority[0];
       priority.forEach((key) => {
-        if (counts[key] > counts[bestKey]) {
-          bestKey = key;
-        }
+        if (state.tags[key] > state.tags[best]) best = key;
       });
 
-      if (state.score >= 7 && counts.facilitator >= 2) {
-        bestKey = "facilitator";
-      } else if (state.score >= 7 && counts.balancer >= 2) {
-        bestKey = "balancer";
-      } else if (counts.person >= 2) {
-        bestKey = "person";
-      } else if (counts.realist >= 2 && state.score <= 5) {
-        bestKey = "realist";
-      } else if (state.score <= 2) {
-        bestKey = "reflector";
-      }
+      if (state.score >= 7 && state.tags.facilitator >= 2) best = "facilitator";
+      else if (state.score >= 7 && state.tags.balancer >= 2) best = "balancer";
+      else if (state.tags.person >= 2) best = "person";
+      else if (state.tags.realist >= 2 && state.score <= 5) best = "realist";
+      else if (state.score <= 2) best = "reflector";
 
-      return typeProfiles[bestKey];
+      return types[best];
     }
 
-    function goForward() {
-      if (state.screen === "title") {
-        showScreen("howto");
-      } else if (state.screen === "howto") {
-        state.roundIndex = 0;
+    function renderResult() {
+      const type = diagnose();
+      $("finalScore").textContent = `${state.score} / 8`;
+      $("scoreMessage").textContent = scoreMessage(state.score);
+      $("typeName").textContent = type.name;
+      $("typeDescription").textContent = type.description;
+      $("nextQuestion").textContent = type.question;
+    }
+
+    function next() {
+      if (state.step === "title") {
+        setStep("howto");
+      } else if (state.step === "howto") {
+        state.round = 0;
         renderRound();
-        showScreen("round");
-      } else if (state.screen === "round") {
-        if (state.selectedIndex !== null) applyChoice();
-      } else if (state.screen === "feedback") {
-        if (state.roundIndex < rounds.length - 1) {
-          state.roundIndex += 1;
+        setStep("round");
+      } else if (state.step === "round") {
+        applySelectedChoice();
+      } else if (state.step === "feedback") {
+        state.lastApplied = null;
+        if (state.round < rounds.length - 1) {
+          state.round += 1;
           renderRound();
-          showScreen("round");
+          setStep("round");
         } else {
           renderResult();
-          showScreen("result");
+          setStep("result");
         }
-      } else if (state.screen === "result") {
-        showScreen("reflection");
-      } else if (state.screen === "reflection") {
-        resetGame();
+      } else if (state.step === "result") {
+        setStep("reflection");
+      } else if (state.step === "reflection") {
+        reset();
       }
     }
 
-    function goBack() {
-      if (state.screen === "howto") {
-        showScreen("title");
-      } else if (state.screen === "round") {
-        if (state.roundIndex === 0 && state.choices.length === 0) {
-          showScreen("howto");
+    function back() {
+      if (state.step === "howto") {
+        setStep("title");
+      } else if (state.step === "round" && state.round === 0 && state.answers.length === 0) {
+        setStep("howto");
+      } else if (state.step === "round" && state.round > 0) {
+        state.round -= 1;
+        const previous = state.answers[state.answers.length - 1];
+        const option = rounds[previous.round].options.find((item) => item.key === previous.key);
+        state.lastApplied = { option, round: previous.round };
+        renderFeedback(option);
+        setStep("feedback");
+      } else if (state.step === "feedback") {
+        undoLastApplied();
+        renderRound();
+        setStep("round");
+      } else if (state.step === "result") {
+        state.round = rounds.length - 1;
+        const last = state.answers[state.answers.length - 1];
+        if (last) {
+          const option = rounds[last.round].options.find((item) => item.key === last.key);
+          state.lastApplied = { option, round: last.round };
+          renderFeedback(option);
         }
-      } else if (state.screen === "feedback") {
-        showScreen("round");
-      } else if (state.screen === "result") {
-        state.roundIndex = rounds.length - 1;
-        showScreen("feedback");
-      } else if (state.screen === "reflection") {
-        showScreen("result");
+        setStep("feedback");
+      } else if (state.step === "reflection") {
+        setStep("result");
       }
     }
 
-    function resetGame() {
-      state.screen = "title";
-      state.roundIndex = 0;
-      state.selectedIndex = null;
+    function reset() {
+      state.step = "title";
+      state.round = 0;
+      state.selected = null;
       state.score = 0;
       state.gauges = { safety: 50, connection: 50, outlook: 50 };
-      state.choices = [];
-      state.tagCounts = {
-        facilitator: 0,
-        person: 0,
-        realist: 0,
-        balancer: 0,
-        creator: 0,
-        reflector: 0
-      };
-
-      document.getElementById("reflectionChanged").value = "";
-      document.getElementById("reflectionUnclear").value = "";
-      document.getElementById("reflectionWant").value = "";
-      showScreen("title");
+      state.answers = [];
+      state.tags = { facilitator: 0, person: 0, realist: 0, balancer: 0, creator: 0, reflector: 0 };
+      state.lastApplied = null;
+      document.querySelectorAll("textarea").forEach((field) => field.value = "");
+      setStep("title");
     }
 
-    mainBtn.addEventListener("click", goForward);
-    backBtn.addEventListener("click", goBack);
-
-    updateChrome();
+    nextButton.addEventListener("click", next);
+    backButton.addEventListener("click", back);
+    updateHeaderAndButtons();
   </script>
 </body>
 </html>
